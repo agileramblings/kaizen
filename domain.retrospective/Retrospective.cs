@@ -117,6 +117,24 @@ namespace kaizen.domain.retrospective
             ApplyChange(new LikeVoteToggled(likeIdentifier, participantId));
         }
 
+        public void ToggleDislikeVote(Guid dislikeIdentifier, string participantId)
+        {
+            CheckParticipant(participantId);
+            CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
+            CheckExists(Dislikes, dislikeIdentifier);
+
+            ApplyChange(new DislikeVoteToggled(dislikeIdentifier, participantId));
+        }
+
+        public void ToggleActionItemVote(Guid aiIdentifier, string participantId)
+        {
+            CheckParticipant(participantId);
+            CheckRetrospectiveInDesiredState(RetrospectiveState.CollectionActionItems);
+            CheckExists(ActionItems, aiIdentifier);
+
+            ApplyChange(new ActionItemVoteToggled(aiIdentifier, participantId));
+        }
+
         #region Private Setters
         // Applied by Reflection when reading events (AggregateBase -> this.AsDynamic().Apply(@event);)
         // Ensures aggregates get their needed property values (e.g. Id) from events
@@ -178,6 +196,18 @@ namespace kaizen.domain.retrospective
         {
             var likeItem = Likes.First(l => l.Id == e.LikeIdentifier);
             likeItem.ToggleVote(e.ParticipantId);
+        }
+
+        private void Apply(DislikeVoteToggled e)
+        {
+            var dislikeItem = Dislikes.First(l => l.Id == e.DislikeIdentifier);
+            dislikeItem.ToggleVote(e.ParticipantId);
+        }
+
+        private void Apply(ActionItemVoteToggled e)
+        {
+            var actionItem = ActionItems.First(l => l.Id == e.ActionItemIdentifier);
+            actionItem.ToggleVote(e.ParticipantId);
         }
 
         #endregion

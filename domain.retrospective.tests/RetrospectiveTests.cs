@@ -31,7 +31,6 @@ namespace kaizen.domain.retrospective.tests
             Assert.Equal(OwnerName, sut.Owner);
         }
 
-
         [Fact]
         public void WhenAParticipantIsInvitedToARetrospective()
         {
@@ -66,6 +65,26 @@ namespace kaizen.domain.retrospective.tests
             Assert.Equal(2, sut.Participants.Count);
             Assert.Equal(_participants[0], sut.Participants[0]);
             Assert.Equal(_participants[1], sut.Participants[1]);
+        }
+
+        [Fact]
+        public void WhenAnInvitedParticipantAddsANewLikeItem()
+        {
+            // arrange
+            const string likeItemDescription = "a description of what we liked";
+            var sut = GetDefaultRetrospectiveSut();
+            sut.InviteAParticipant(_participants[0]);
+
+            // act
+            sut.AddLikeItem(likeItemDescription, _participants[0]);
+
+            // assert
+            var events = sut.GetUncommittedChanges().ToList();
+            Assert.Equal(3, events.Count);
+            Assert.Equal(typeof(LikeAdded), events.Last().GetType());
+
+            Assert.Equal(likeItemDescription, sut.Likes.First().Description);
+            Assert.Equal(_participants[0], sut.Likes.First().ParticipantId);
         }
 
         #region Test Helpers

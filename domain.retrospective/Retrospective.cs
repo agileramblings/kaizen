@@ -12,6 +12,7 @@ namespace kaizen.domain.retrospective
         public DateTime CreatedOn { get; private set; }
         public string Owner { get; private set; }
         public List<string> Participants { get; } = new List<string>();
+        public List<Like> Likes { get; } = new List<Like>();
 
         public Retrospective(Guid newRetrospectiveId, string owner)
         {
@@ -22,6 +23,11 @@ namespace kaizen.domain.retrospective
         {
             ApplyChange(new ParticipantAdded(participant));
         }
+        public void AddLikeItem(string description, string participantId)
+        {
+            ApplyChange(new LikeAdded(description, participantId));
+        }
+
 
         #region Private Setters
         // Applied by Reflection when reading events (AggregateBase -> this.AsDynamic().Apply(@event);)
@@ -38,7 +44,23 @@ namespace kaizen.domain.retrospective
             Participants.Add(e.ParticipantIdentifier);
         }
 
-        #endregion
+        private void Apply(LikeAdded e)
+        {
+            Likes.Add(new Like{Description = e.Description, ParticipantId = e.ParticipantId});
+        }
 
+        #endregion
+    }
+
+    public class LikeAdded : Event
+    {
+        public string Description;
+        public string ParticipantId;
+
+        public LikeAdded(string description, string participantId)
+        {
+            Description = description;
+            ParticipantId = participantId;
+        }
     }
 }

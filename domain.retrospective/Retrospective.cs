@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using kaizen.domain.@base;
 using kaizen.domain.retrospective.events;
@@ -15,6 +16,7 @@ namespace kaizen.domain.retrospective
         public List<string> Participants { get; } = new List<string>();
         public List<Like> Likes { get; } = new List<Like>();
         public List<Dislike> Dislikes { get; } = new List<Dislike>();
+        public List<ActionItem> ActionItems { get; } = new List<ActionItem>();
 
         public Retrospective(Guid newRetrospectiveId, string owner)
         {
@@ -36,14 +38,12 @@ namespace kaizen.domain.retrospective
             CheckParticipant(participantId);
             ApplyChange(new DislikeAdded(description, participantId));
         }
-
-        private void CheckParticipant(string participantId)
+        public void AddActionItem(string description, string participantId)
         {
-            if (!Participants.Contains(participantId))
-            {
-                throw new UninvitedParticipantException();
-            }
+            CheckParticipant(participantId);
+            ApplyChange(new ActionItemAdded(description, participantId));
         }
+
 
 
         #region Private Setters
@@ -71,7 +71,21 @@ namespace kaizen.domain.retrospective
             Dislikes.Add(new Dislike { Description = e.Description, ParticipantId = e.ParticipantId });
         }
 
+        private void Apply(ActionItemAdded e)
+        {
+            ActionItems.Add(new ActionItem { Description = e.Description, ParticipantId = e.ParticipantId });
+        }
+
         #endregion
 
+        #region Private helpers
+        private void CheckParticipant(string participantId)
+        {
+            if (!Participants.Contains(participantId))
+            {
+                throw new UninvitedParticipantException();
+            }
+        }
+        #endregion
     }
 }

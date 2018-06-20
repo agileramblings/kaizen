@@ -138,6 +138,41 @@ namespace kaizen.domain.retrospective.tests
             Assert.Empty(sut.Dislikes);
         }
 
+        [Fact]
+        public void AnInvitedParticipantCanAddAnActionItem()
+        {
+            // arrange
+            const string actionItemDescription = "a description of what we will try to do";
+            var sut = GetDefaultRetrospectiveSut();
+            sut.InviteAParticipant(_participants[0]);
+
+            // act
+            sut.AddActionItem(actionItemDescription, _participants[0]);
+
+            // assert
+            var events = sut.GetUncommittedChanges().ToList();
+            Assert.Equal(3, events.Count);
+            Assert.Equal(typeof(ActionItemAdded), events.Last().GetType());
+
+            Assert.Single(sut.ActionItems);
+            Assert.Equal(actionItemDescription, sut.ActionItems.First().Description);
+            Assert.Equal(_participants[0], sut.ActionItems.First().ParticipantId);
+        }
+
+        [Fact]
+        public void AnUninvitedParticipantCannotAddAnActionItem()
+        {
+            // arrange
+            const string actionItemDescription = "a description of what we will try to do";
+            var sut = GetDefaultRetrospectiveSut();
+
+            // act & assert
+            Assert.Throws<UninvitedParticipantException>(() => sut.AddActionItem(actionItemDescription, _participants[0]));
+
+            // assert
+            Assert.Empty(sut.ActionItems);
+        }
+
         #region Test Helpers
         private Retrospective GetDefaultRetrospectiveSut() => new Retrospective(_defaultRetroId, OwnerName);
         #endregion

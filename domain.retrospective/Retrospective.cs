@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using kaizen.domain.@base;
 using kaizen.domain.retrospective.events;
 
@@ -10,10 +11,16 @@ namespace kaizen.domain.retrospective
     {
         public DateTime CreatedOn { get; private set; }
         public string Owner { get; private set; }
+        public List<string> Participants { get; } = new List<string>();
 
         public Retrospective(Guid newRetrospectiveId, string owner)
         {
             ApplyChange(new RetrospectiveCreated(newRetrospectiveId, owner));
+        }
+
+        public void InviteAParticipant(string participant)
+        {
+            ApplyChange(new ParticipantAdded(participant));
         }
 
         #region Private Setters
@@ -23,8 +30,15 @@ namespace kaizen.domain.retrospective
         {
             Id = e.Id;
             CreatedOn = e.CreatedOn;
+            Owner = e.Owner;
+        }
+
+        private void Apply(ParticipantAdded e)
+        {
+            Participants.Add(e.ParticipantIdentifier);
         }
 
         #endregion
+
     }
 }

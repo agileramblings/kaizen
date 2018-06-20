@@ -120,5 +120,44 @@ namespace kaizen.domain.retrospective.tests
             // Assert
             Assert.Equal(initialDescription, sut.ActionItems.First(ai => ai.Id == actionItemIdentifier).Description);
         }
+
+        [Fact]
+        public void AnInvitedParticipantCanDeleteTheirOwnActionItem()
+        {
+            // arrange
+            const string initialDescription = "Initial description";
+            var sut = GetDefaultRetrospectiveSut();
+            sut.InviteAParticipant(_participants[0]);
+            sut.StartCollectingActionItems(OwnerName);
+
+            sut.AddActionItem(initialDescription, _participants[0]);
+            Guid actionItemIdentifier = sut.ActionItems.First().Id;
+
+            // act
+            sut.DeleteActionItem(actionItemIdentifier, _participants[0]);
+
+            // assert
+            Assert.Empty(sut.ActionItems);
+        }
+
+        [Fact]
+        public void AnInvitedParticipantCanDeleteSomeoneElsesActionItem()
+        {
+            // arrange
+            const string initialDescription = "Initial description";
+            var sut = GetDefaultRetrospectiveSut();
+            sut.InviteAParticipant(_participants[0]);
+            sut.InviteAParticipant(_participants[1]);
+            sut.StartCollectingActionItems(OwnerName);
+
+            sut.AddActionItem(initialDescription, _participants[0]);
+            Guid actionItemIdentifier = sut.ActionItems.First().Id;
+
+            // act
+            Assert.Throws<RetrospectiveItemNotOwnedByParticipantException>(() => sut.DeleteActionItem(actionItemIdentifier, _participants[1]));
+
+            // assert
+            Assert.Single(sut.ActionItems);
+        }
     }
 }

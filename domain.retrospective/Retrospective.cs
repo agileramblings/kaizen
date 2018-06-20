@@ -106,6 +106,15 @@ namespace kaizen.domain.retrospective
             ApplyChange(new ActionItemUpdated(actionItemIdentifier, description));
         }
 
+        public void DeleteActionItem(Guid actionItemIdentifier, string participantId)
+        {
+            CheckParticipant(participantId);
+            CheckRetrospectiveInDesiredState(RetrospectiveState.CollectionActionItems);
+            CheckExistsAndCanModify(ActionItems, actionItemIdentifier, participantId);
+
+            ApplyChange(new ActionItemDeleted(actionItemIdentifier));
+        }
+
         #region Private Setters
         // Applied by Reflection when reading events (AggregateBase -> this.AsDynamic().Apply(@event);)
         // Ensures aggregates get their needed property values (e.g. Id) from events
@@ -166,6 +175,12 @@ namespace kaizen.domain.retrospective
         {
             var dislike = Dislikes.First(l => l.Id == e.DislikeIdentifier);
             Dislikes.Remove(dislike);
+        }
+
+        private void Apply(ActionItemDeleted e)
+        {
+            var actionItem = ActionItems.First(l => l.Id == e.ActionItemIdentifier);
+            ActionItems.Remove(actionItem);
         }
 
         #endregion

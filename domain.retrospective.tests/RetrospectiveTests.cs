@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using kaizen.domain.retrospective.events;
+using kaizen.domain.retrospective.exceptions;
 using Xunit;
 
 namespace kaizen.domain.retrospective.tests
@@ -85,6 +86,17 @@ namespace kaizen.domain.retrospective.tests
 
             Assert.Equal(likeItemDescription, sut.Likes.First().Description);
             Assert.Equal(_participants[0], sut.Likes.First().ParticipantId);
+        }
+
+        [Fact]
+        public void WhenAnUninvitedParticipantTrysToAddANewLike()
+        {
+            // arrange
+            const string likeItemDescription = "a description of what we liked";
+            var sut = GetDefaultRetrospectiveSut();
+
+            // act
+            Assert.Throws<UninvitedParticipantException>(() => sut.AddLikeItem(likeItemDescription, _participants[0]));
         }
 
         #region Test Helpers

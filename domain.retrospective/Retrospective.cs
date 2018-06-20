@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using kaizen.domain.@base;
 using kaizen.domain.retrospective.events;
+using kaizen.domain.retrospective.exceptions;
 
 // ReSharper disable UnusedMember.Local
 
@@ -25,6 +26,11 @@ namespace kaizen.domain.retrospective
         }
         public void AddLikeItem(string description, string participantId)
         {
+            if (!Participants.Contains(participantId))
+            {
+                throw new UninvitedParticipantException();
+            }
+
             ApplyChange(new LikeAdded(description, participantId));
         }
 

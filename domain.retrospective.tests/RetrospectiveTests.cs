@@ -13,7 +13,7 @@ namespace kaizen.domain.retrospective.tests
         private readonly Guid _defaultRetroId = Guid.Parse("12345678-1234-1234-1234-123456789012");
 
         [Fact]
-        public void WhenARetrospectiveIsCreated()
+        public void ARetrospectiveCanBeCreated()
         {
             // arrange
 
@@ -33,7 +33,7 @@ namespace kaizen.domain.retrospective.tests
         }
 
         [Fact]
-        public void WhenAParticipantIsInvitedToARetrospective()
+        public void AParticipantCanBeInvitedToARetrospective()
         {
             // arrange
             var sut = GetDefaultRetrospectiveSut();
@@ -50,7 +50,7 @@ namespace kaizen.domain.retrospective.tests
         }
 
         [Fact]
-        public void WhenMultipleParticipantsAreInvitedToARetrospective()
+        public void MultipleParticipantsCanBeInvitedToARetrospective()
         {
             // arrange
             var sut = GetDefaultRetrospectiveSut();
@@ -69,7 +69,7 @@ namespace kaizen.domain.retrospective.tests
         }
 
         [Fact]
-        public void WhenAnInvitedParticipantAddsANewLikeItem()
+        public void AnInvitedParticipantCanAddANewLikeItem()
         {
             // arrange
             const string likeItemDescription = "a description of what we liked";
@@ -84,19 +84,58 @@ namespace kaizen.domain.retrospective.tests
             Assert.Equal(3, events.Count);
             Assert.Equal(typeof(LikeAdded), events.Last().GetType());
 
+            Assert.Single(sut.Likes);
             Assert.Equal(likeItemDescription, sut.Likes.First().Description);
             Assert.Equal(_participants[0], sut.Likes.First().ParticipantId);
         }
 
         [Fact]
-        public void WhenAnUninvitedParticipantTrysToAddANewLike()
+        public void AnUninvitedParticipantCannotAddANewLike()
         {
             // arrange
             const string likeItemDescription = "a description of what we liked";
             var sut = GetDefaultRetrospectiveSut();
 
-            // act
+            // act & assert
             Assert.Throws<UninvitedParticipantException>(() => sut.AddLikeItem(likeItemDescription, _participants[0]));
+
+            // assert
+            Assert.Empty(sut.Likes);
+        }
+
+        [Fact]
+        public void AnInvitedParticipantCanAddANewDislike()
+        {
+            // arrange
+            const string dislikeItemDescription = "a description of what we disliked";
+            var sut = GetDefaultRetrospectiveSut();
+            sut.InviteAParticipant(_participants[0]);
+
+            // act
+            sut.AddDislikeItem(dislikeItemDescription, _participants[0]);
+
+            // assert
+            var events = sut.GetUncommittedChanges().ToList();
+            Assert.Equal(3, events.Count);
+            Assert.Equal(typeof(DislikeAdded), events.Last().GetType());
+
+            Assert.Single(sut.Dislikes);
+            Assert.Equal(dislikeItemDescription, sut.Dislikes.First().Description);
+            Assert.Equal(_participants[0], sut.Dislikes.First().ParticipantId);
+        }
+
+        [Fact]
+        public void AnUninvitedParticipantCannotAddANewDislike()
+        {
+            // arrange
+            const string dislikeItemDescription = "a description of what we disliked";
+            var sut = GetDefaultRetrospectiveSut();
+
+            // act & assert
+            Assert.Throws<UninvitedParticipantException>(() => sut.AddDislikeItem(dislikeItemDescription, _participants[0]));
+
+            // assert
+            Assert.Empty(sut.Dislikes);
         }
 
         #region Test Helpers

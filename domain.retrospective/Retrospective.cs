@@ -24,12 +24,10 @@ namespace kaizen.domain.retrospective
         {
             ApplyChange(new RetrospectiveCreated(newRetrospectiveId, owner));
         }
-
         public void InviteAParticipant(string participant)
         {
             ApplyChange(new ParticipantAdded(participant));
         }
-
         public void StartCollectingActionItems(string participantId)
         {
             if (participantId != Owner)
@@ -46,7 +44,6 @@ namespace kaizen.domain.retrospective
 
             ApplyChange(new LikeAdded(description, participantId));
         }
-
         public void UpdateLikeItem(Guid likeIdentifier, string description, string participantId)
         {
             CheckParticipant(participantId);
@@ -55,7 +52,6 @@ namespace kaizen.domain.retrospective
 
             ApplyChange(new LikeUpdated(likeIdentifier, description));
         }
-
         public void DeleteLikeItem(Guid likeIdentifier, string participantId)
         {
             CheckParticipant(participantId);
@@ -80,7 +76,6 @@ namespace kaizen.domain.retrospective
 
             ApplyChange(new DislikeUpdated(dislikeIdentifier, description));
         }
-
         public void DeleteDislikeItem(Guid dislikeIdentifier, string participantId)
         {
             CheckParticipant(participantId);
@@ -105,7 +100,6 @@ namespace kaizen.domain.retrospective
 
             ApplyChange(new ActionItemUpdated(actionItemIdentifier, description));
         }
-
         public void DeleteActionItem(Guid actionItemIdentifier, string participantId)
         {
             CheckParticipant(participantId);
@@ -124,59 +118,48 @@ namespace kaizen.domain.retrospective
             CreatedOn = e.CreatedOn;
             Owner = e.Owner;
         }
-
         private void Apply(ParticipantAdded e)
         {
             Participants.Add(e.ParticipantIdentifier);
         }
-
         private void Apply(LikeAdded e)
         {
             Likes.Add(new Like{Id = e.Id, Description = e.Description, ParticipantId = e.ParticipantId});
         }
-
         private void Apply(DislikeAdded e)
         {
             Dislikes.Add(new Dislike { Id = e.Id, Description = e.Description, ParticipantId = e.ParticipantId });
         }
-
         private void Apply(ActionItemAdded e)
         {
             ActionItems.Add(new ActionItem { Id = e.Id, Description = e.Description, ParticipantId = e.ParticipantId });
         }
-
         private void Apply(RetrospectiveStateChanged e)
         {
             State = e.TargetState;
         }
-
         private void Apply(LikeUpdated e)
         {
             Likes.First(l => l.Id == e.LikeIdentifier).Description = e.Description;
         }
-
         private void Apply(DislikeUpdated e)
         {
             Dislikes.First(dl => dl.Id == e.DislikeIdentifier).Description = e.Description;
         }
-
         private void Apply(ActionItemUpdated e)
         {
             ActionItems.First(dl => dl.Id == e.ActionItemIdentifier).Description = e.Description;
         }
-
         private void Apply(LikeDeleted e)
         {
             var like = Likes.First(l => l.Id == e.LikeIdentifier);
             Likes.Remove(like);
         }
-
         private void Apply(DislikeDeleted e)
         {
             var dislike = Dislikes.First(l => l.Id == e.DislikeIdentifier);
             Dislikes.Remove(dislike);
         }
-
         private void Apply(ActionItemDeleted e)
         {
             var actionItem = ActionItems.First(l => l.Id == e.ActionItemIdentifier);

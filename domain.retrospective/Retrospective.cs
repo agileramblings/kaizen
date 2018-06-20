@@ -252,7 +252,5 @@ namespace kaizen.domain.retrospective
         }
 
         #endregion
-
-
     }
 }

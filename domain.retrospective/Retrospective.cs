@@ -14,6 +14,7 @@ namespace kaizen.domain.retrospective
         public string Owner { get; private set; }
         public List<string> Participants { get; } = new List<string>();
         public List<Like> Likes { get; } = new List<Like>();
+        public List<Dislike> Dislikes { get; } = new List<Dislike>();
 
         public Retrospective(Guid newRetrospectiveId, string owner)
         {
@@ -26,12 +27,22 @@ namespace kaizen.domain.retrospective
         }
         public void AddLikeItem(string description, string participantId)
         {
+            CheckParticipant(participantId);
+            ApplyChange(new LikeAdded(description, participantId));
+        }
+
+        public void AddDislikeItem(string description, string participantId)
+        {
+            CheckParticipant(participantId);
+            ApplyChange(new DislikeAdded(description, participantId));
+        }
+
+        private void CheckParticipant(string participantId)
+        {
             if (!Participants.Contains(participantId))
             {
                 throw new UninvitedParticipantException();
             }
-
-            ApplyChange(new LikeAdded(description, participantId));
         }
 
 
@@ -55,18 +66,12 @@ namespace kaizen.domain.retrospective
             Likes.Add(new Like{Description = e.Description, ParticipantId = e.ParticipantId});
         }
 
-        #endregion
-    }
-
-    public class LikeAdded : Event
-    {
-        public string Description;
-        public string ParticipantId;
-
-        public LikeAdded(string description, string participantId)
+        private void Apply(DislikeAdded e)
         {
-            Description = description;
-            ParticipantId = participantId;
+            Dislikes.Add(new Dislike { Description = e.Description, ParticipantId = e.ParticipantId });
         }
+
+        #endregion
+
     }
 }

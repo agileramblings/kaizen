@@ -108,6 +108,14 @@ namespace kaizen.domain.retrospective
 
             ApplyChange(new ActionItemDeleted(actionItemIdentifier));
         }
+        public void ToggleLikeVote(Guid likeIdentifier, string participantId)
+        {
+            CheckParticipant(participantId);
+            CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
+            CheckExists(Likes, likeIdentifier);
+
+            ApplyChange(new LikeVoteToggled(likeIdentifier, participantId));
+        }
 
         #region Private Setters
         // Applied by Reflection when reading events (AggregateBase -> this.AsDynamic().Apply(@event);)
@@ -166,6 +174,12 @@ namespace kaizen.domain.retrospective
             ActionItems.Remove(actionItem);
         }
 
+        private void Apply(LikeVoteToggled e)
+        {
+            var likeItem = Likes.First(l => l.Id == e.LikeIdentifier);
+            likeItem.ToggleVote(e.ParticipantId);
+        }
+
         #endregion
 
         #region Private helpers
@@ -197,6 +211,18 @@ namespace kaizen.domain.retrospective
                 throw new RetrospectiveItemNotOwnedByParticipantException(nameof(T), identifier, participantId);
             }
         }
+
+        private void CheckExists<T>(IEnumerable<T> collection, Guid identifier) where T : RetrospectiveItemBase
+        {
+            var item = collection.FirstOrDefault(l => l.Id == identifier);
+            if (item == null)
+            {
+                throw new RetrospectiveItemDoesNotExistException(nameof(T), identifier);
+            }
+        }
+
         #endregion
+
+
     }
 }

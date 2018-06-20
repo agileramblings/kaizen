@@ -139,22 +139,24 @@ namespace kaizen.domain.retrospective.tests
         }
 
         [Fact]
-        public void AnInvitedParticipantCanAddAnActionItem()
+        public void AnInvitedParticipantCanAddAnActionItemIfRetrospectiveIsCollectingActionItems()
         {
             // arrange
             const string actionItemDescription = "a description of what we will try to do";
             var sut = GetDefaultRetrospectiveSut();
             sut.InviteAParticipant(_participants[0]);
+            sut.StartCollectingActionItems(OwnerName);
 
             // act
             sut.AddActionItem(actionItemDescription, _participants[0]);
 
             // assert
             var events = sut.GetUncommittedChanges().ToList();
-            Assert.Equal(3, events.Count);
+            Assert.Equal(4, events.Count);
             Assert.Equal(typeof(ActionItemAdded), events.Last().GetType());
 
             Assert.Single(sut.ActionItems);
+            Assert.Equal(RetrospectiveState.CollectionActionItems, sut.State);
             Assert.Equal(actionItemDescription, sut.ActionItems.First().Description);
             Assert.Equal(_participants[0], sut.ActionItems.First().ParticipantId);
         }
@@ -171,6 +173,48 @@ namespace kaizen.domain.retrospective.tests
 
             // assert
             Assert.Empty(sut.ActionItems);
+        }
+
+        [Fact]
+        public void AnInvitedParticipantCannotAddAnActionItemWhileTheRetrospectiveIsCollectingSuggestions()
+        {
+            // arrange
+            const string actionItemDescription = "a description of what we will try to do";
+            var sut = GetDefaultRetrospectiveSut();
+            sut.InviteAParticipant(_participants[0]);
+
+            // act & assert
+            Assert.Throws<RetrospectiveIsCollectingSuggestionsException>(() => sut.AddActionItem(actionItemDescription, _participants[0]));
+
+            // Assert
+            Assert.Equal(RetrospectiveState.CollectingSuggestions, sut.State);
+        }
+
+        [Fact]
+        public void AnOwnerCanChangeARetrospectiveToCollectingActionItemsState()
+        {
+            // arrange
+            var sut = GetDefaultRetrospectiveSut();
+
+            // act
+            sut.StartCollectingActionItems(OwnerName);
+
+            // assert
+            Assert.Equal(RetrospectiveState.CollectionActionItems, sut.State);
+        }
+
+        [Fact]
+        public void AParticipantCannotChangeARetrospectiveToCollectingActionItemsState()
+        {
+            // arrange
+            var sut = GetDefaultRetrospectiveSut();
+            sut.InviteAParticipant(_participants[0]);
+
+            // act
+            Assert.Throws<ParticipantCannotChangeRetrospectiveStateException>(() => sut.StartCollectingActionItems(_participants[0]));
+
+            // assert
+            Assert.Equal(RetrospectiveState.CollectingSuggestions, sut.State);
         }
 
         #region Test Helpers

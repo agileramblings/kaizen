@@ -13,6 +13,7 @@ namespace kaizen.domain.retrospective
     {
         public DateTime CreatedOn { get; private set; }
         public string Owner { get; private set; }
+        public RetrospectiveState State { get; private set; } = RetrospectiveState.CollectingSuggestions;
         public List<string> Participants { get; } = new List<string>();
         public List<Like> Likes { get; } = new List<Like>();
         public List<Dislike> Dislikes { get; } = new List<Dislike>();
@@ -27,24 +28,34 @@ namespace kaizen.domain.retrospective
         {
             ApplyChange(new ParticipantAdded(participant));
         }
+        public void StartCollectingActionItems(string participantId)
+        {
+            if (participantId != Owner)
+            {
+                throw new ParticipantCannotChangeRetrospectiveStateException();
+            }
+            ApplyChange(new RetrospectiveStateChanged(RetrospectiveState.CollectionActionItems));
+        }
+
         public void AddLikeItem(string description, string participantId)
         {
             CheckParticipant(participantId);
+            CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
             ApplyChange(new LikeAdded(description, participantId));
         }
 
         public void AddDislikeItem(string description, string participantId)
         {
             CheckParticipant(participantId);
+            CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
             ApplyChange(new DislikeAdded(description, participantId));
         }
         public void AddActionItem(string description, string participantId)
         {
             CheckParticipant(participantId);
+            CheckRetrospectiveInDesiredState(RetrospectiveState.CollectionActionItems);
             ApplyChange(new ActionItemAdded(description, participantId));
         }
-
-
 
         #region Private Setters
         // Applied by Reflection when reading events (AggregateBase -> this.AsDynamic().Apply(@event);)
@@ -76,6 +87,11 @@ namespace kaizen.domain.retrospective
             ActionItems.Add(new ActionItem { Description = e.Description, ParticipantId = e.ParticipantId });
         }
 
+        private void Apply(RetrospectiveStateChanged e)
+        {
+            State = e.TargetState;
+        }
+
         #endregion
 
         #region Private helpers
@@ -86,6 +102,15 @@ namespace kaizen.domain.retrospective
                 throw new UninvitedParticipantException();
             }
         }
+
+        private void CheckRetrospectiveInDesiredState(RetrospectiveState desiredState)
+        {
+            if (State != desiredState)
+            {
+                throw new RetrospectiveIsCollectingSuggestionsException();
+            }
+        }
         #endregion
+
     }
 }

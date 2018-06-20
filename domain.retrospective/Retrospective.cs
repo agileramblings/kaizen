@@ -43,6 +43,7 @@ namespace kaizen.domain.retrospective
         {
             CheckParticipant(participantId);
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
+
             ApplyChange(new LikeAdded(description, participantId));
         }
 
@@ -68,22 +69,14 @@ namespace kaizen.domain.retrospective
         {
             CheckParticipant(participantId);
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
+
             ApplyChange(new DislikeAdded(description, participantId));
         }
         public void UpdateDislikeItem(Guid dislikeIdentifier, string description, string participantId)
         {
             CheckParticipant(participantId);
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
-            var dislike = Dislikes.FirstOrDefault(l => l.Id == dislikeIdentifier);
-            if (dislike == null)
-            {
-                throw new RetrospectiveItemDoesNotExistException(nameof(Dislikes), dislikeIdentifier);
-            }
-
-            if (dislike.ParticipantId != participantId)
-            {
-                throw new RetrospectiveItemNotOwnedByParticipantException(nameof(Like), dislikeIdentifier, participantId);
-            }
+            CheckExistsAndCanModify(Dislikes, dislikeIdentifier, participantId);
 
             ApplyChange(new DislikeUpdated(dislikeIdentifier, description));
         }
@@ -101,22 +94,14 @@ namespace kaizen.domain.retrospective
         {
             CheckParticipant(participantId);
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectionActionItems);
+
             ApplyChange(new ActionItemAdded(description, participantId));
         }
         public void UpdateActionItem(Guid actionItemIdentifier, string description, string participantId)
         {
             CheckParticipant(participantId);
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectionActionItems);
-            var actionItem = ActionItems.FirstOrDefault(l => l.Id == actionItemIdentifier);
-            if (actionItem == null)
-            {
-                throw new RetrospectiveItemDoesNotExistException(nameof(ActionItem), actionItemIdentifier);
-            }
-
-            if (actionItem.ParticipantId != participantId)
-            {
-                throw new RetrospectiveItemNotOwnedByParticipantException(nameof(ActionItem), actionItemIdentifier, participantId);
-            }
+            CheckExistsAndCanModify(ActionItems, actionItemIdentifier, participantId);
 
             ApplyChange(new ActionItemUpdated(actionItemIdentifier, description));
         }

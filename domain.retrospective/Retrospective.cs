@@ -29,6 +29,7 @@ namespace kaizen.domain.retrospective
         {
             ApplyChange(new ParticipantAdded(participant));
         }
+
         public void StartCollectingActionItems(string participantId)
         {
             if (participantId != Owner)
@@ -49,18 +50,18 @@ namespace kaizen.domain.retrospective
         {
             CheckParticipant(participantId);
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
-            var like = Likes.FirstOrDefault(l => l.Id == likeIdentifier);
-            if (like == null)
-            {
-                throw new RetrospectiveItemDoesNotExistException(nameof(Like), likeIdentifier);
-            }
-
-            if (like.ParticipantId != participantId)
-            {
-                throw new RetrospectiveItemNotOwnedByParticipantException(nameof(Like), likeIdentifier, participantId);
-            }
+            CheckExistsAndCanModify(Likes, likeIdentifier, participantId);
 
             ApplyChange(new LikeUpdated(likeIdentifier, description));
+        }
+
+        public void DeleteLikeItem(Guid likeIdentifier, string participantId)
+        {
+            CheckParticipant(participantId);
+            CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
+            CheckExistsAndCanModify(Likes, likeIdentifier, participantId);
+
+            ApplyChange(new LikeDeleted(likeIdentifier));
         }
 
         public void AddDislikeItem(string description, string participantId)
@@ -69,11 +70,55 @@ namespace kaizen.domain.retrospective
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
             ApplyChange(new DislikeAdded(description, participantId));
         }
+        public void UpdateDislikeItem(Guid dislikeIdentifier, string description, string participantId)
+        {
+            CheckParticipant(participantId);
+            CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
+            var dislike = Dislikes.FirstOrDefault(l => l.Id == dislikeIdentifier);
+            if (dislike == null)
+            {
+                throw new RetrospectiveItemDoesNotExistException(nameof(Dislikes), dislikeIdentifier);
+            }
+
+            if (dislike.ParticipantId != participantId)
+            {
+                throw new RetrospectiveItemNotOwnedByParticipantException(nameof(Like), dislikeIdentifier, participantId);
+            }
+
+            ApplyChange(new DislikeUpdated(dislikeIdentifier, description));
+        }
+
+        public void DeleteDislikeItem(Guid dislikeIdentifier, string participantId)
+        {
+            CheckParticipant(participantId);
+            CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
+            CheckExistsAndCanModify(Dislikes, dislikeIdentifier, participantId);
+
+            ApplyChange(new DislikeDeleted(dislikeIdentifier));
+        }
+
         public void AddActionItem(string description, string participantId)
         {
             CheckParticipant(participantId);
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectionActionItems);
             ApplyChange(new ActionItemAdded(description, participantId));
+        }
+        public void UpdateActionItem(Guid actionItemIdentifier, string description, string participantId)
+        {
+            CheckParticipant(participantId);
+            CheckRetrospectiveInDesiredState(RetrospectiveState.CollectionActionItems);
+            var actionItem = ActionItems.FirstOrDefault(l => l.Id == actionItemIdentifier);
+            if (actionItem == null)
+            {
+                throw new RetrospectiveItemDoesNotExistException(nameof(ActionItem), actionItemIdentifier);
+            }
+
+            if (actionItem.ParticipantId != participantId)
+            {
+                throw new RetrospectiveItemNotOwnedByParticipantException(nameof(ActionItem), actionItemIdentifier, participantId);
+            }
+
+            ApplyChange(new ActionItemUpdated(actionItemIdentifier, description));
         }
 
         #region Private Setters
@@ -116,6 +161,28 @@ namespace kaizen.domain.retrospective
             Likes.First(l => l.Id == e.LikeIdentifier).Description = e.Description;
         }
 
+        private void Apply(DislikeUpdated e)
+        {
+            Dislikes.First(dl => dl.Id == e.DislikeIdentifier).Description = e.Description;
+        }
+
+        private void Apply(ActionItemUpdated e)
+        {
+            ActionItems.First(dl => dl.Id == e.ActionItemIdentifier).Description = e.Description;
+        }
+
+        private void Apply(LikeDeleted e)
+        {
+            var like = Likes.First(l => l.Id == e.LikeIdentifier);
+            Likes.Remove(like);
+        }
+
+        private void Apply(DislikeDeleted e)
+        {
+            var dislike = Dislikes.First(l => l.Id == e.DislikeIdentifier);
+            Dislikes.Remove(dislike);
+        }
+
         #endregion
 
         #region Private helpers
@@ -132,6 +199,19 @@ namespace kaizen.domain.retrospective
             if (State != desiredState)
             {
                 throw new RetrospectiveIsCollectingSuggestionsException();
+            }
+        }
+        private void CheckExistsAndCanModify<T>(IEnumerable<T> collection, Guid identifier, string participantId) where T : RetrospectiveItemBase
+        {
+            var item = collection.FirstOrDefault(l => l.Id == identifier);
+            if (item == null)
+            {
+                throw new RetrospectiveItemDoesNotExistException(nameof(T), identifier);
+            }
+
+            if (item.ParticipantId != participantId)
+            {
+                throw new RetrospectiveItemNotOwnedByParticipantException(nameof(T), identifier, participantId);
             }
         }
         #endregion

@@ -98,5 +98,41 @@ namespace kaizen.domain.retrospective.tests
             // Assert
             Assert.Equal(initialDescription, sut.Dislikes.First(dl => dl.Id == dislikeIdentifier).Description);
         }
+
+        [Fact]
+        public void AnInvitedParticipantCanDeleteTheirOwnDislike()
+        {
+            // arrange
+            const string dislikeItemDescription = "a description of what we disliked";
+            var sut = GetDefaultRetrospectiveSut();
+            sut.InviteAParticipant(_participants[0]);
+            sut.AddDislikeItem(dislikeItemDescription, _participants[0]);
+            Guid dislikeIdentifier = sut.Dislikes.First().Id;
+
+            // act
+            sut.DeleteDislikeItem(dislikeIdentifier, _participants[0]);
+
+            // assert
+            Assert.Empty(sut.Dislikes);
+        }
+
+        [Fact]
+        public void AnInvitedParticipantCanDeleteSomeoneElsesDislike()
+        {
+            // arrange
+            const string dislikeItemDescription = "a description of what we disliked";
+            var sut = GetDefaultRetrospectiveSut();
+            sut.InviteAParticipant(_participants[0]);
+            sut.InviteAParticipant(_participants[1]);
+
+            sut.AddDislikeItem(dislikeItemDescription, _participants[0]);
+            Guid dislikeIdentifier = sut.Dislikes.First().Id;
+
+            // act
+            Assert.Throws<RetrospectiveItemNotOwnedByParticipantException>(() => sut.DeleteDislikeItem(dislikeIdentifier, _participants[1]));
+
+            // assert
+            Assert.Single(sut.Dislikes);
+        }
     }
 }

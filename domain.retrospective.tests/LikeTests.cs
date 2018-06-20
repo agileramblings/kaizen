@@ -98,5 +98,41 @@ namespace kaizen.domain.retrospective.tests
             // Assert
             Assert.Equal(initialDescription, sut.Likes.First(l => l.Id == likeIdentifier).Description);
         }
+
+        [Fact]
+        public void AnInvitedParticipantCanDeleteTheirOwnLike()
+        {
+            // arrange
+            const string initialDescription = "Initial description";
+            var sut = GetDefaultRetrospectiveSut();
+            sut.InviteAParticipant(_participants[0]);
+            sut.AddLikeItem(initialDescription, _participants[0]);
+            Guid likeIdentifier = sut.Likes.First().Id;
+
+            // act
+            sut.DeleteLikeItem(likeIdentifier, _participants[0]);
+
+            // assert
+            Assert.Empty(sut.Likes);
+        }
+
+        [Fact]
+        public void AnInvitedParticipantCannotDeleteSomeoneElsesLike()
+        {
+            // arrange
+            const string initialDescription = "Initial description";
+            var sut = GetDefaultRetrospectiveSut();
+            sut.InviteAParticipant(_participants[0]);
+            sut.InviteAParticipant(_participants[1]);
+
+            sut.AddLikeItem(initialDescription, _participants[0]);
+            Guid likeIdentifier = sut.Likes.First().Id;
+
+            // act & assert
+            Assert.Throws<RetrospectiveItemNotOwnedByParticipantException>(() => sut.DeleteLikeItem(likeIdentifier, _participants[1]));
+
+            // Assert
+            Assert.Single(sut.Likes);
+        }
     }
 }

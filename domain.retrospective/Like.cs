@@ -1,8 +1,6 @@
 ﻿namespace kaizen.domain.retrospective
 {
-    public class Like
+    public class Like : RetrospectiveItemBase
     {
-        public string Description { get; set; }
-        public string ParticipantId { get; set; }
     }
 }

@@ -204,7 +204,7 @@ namespace kaizen.domain.retrospective.tests
         }
 
         [Fact]
-        public void AParticipantCannotChangeARetrospectiveToCollectingActionItemsState()
+        public void AnInvitedParticipantCannotChangeARetrospectiveToCollectingActionItemsState()
         {
             // arrange
             var sut = GetDefaultRetrospectiveSut();
@@ -215,6 +215,62 @@ namespace kaizen.domain.retrospective.tests
 
             // assert
             Assert.Equal(RetrospectiveState.CollectingSuggestions, sut.State);
+        }
+
+        [Fact]
+        public void AnInvitedParticipantCanUpdateTheirOwnLike()
+        {
+            // arrange
+            const string initialDescription = "Initial description";
+            const string updateDescription = "Update to a description for my like";
+            var sut = GetDefaultRetrospectiveSut();
+            sut.InviteAParticipant(_participants[0]);
+            sut.AddLikeItem(initialDescription, _participants[0]);
+            Guid likeIdentifier = sut.Likes.First().Id;
+
+            // act
+            sut.UpdateLikeItem(likeIdentifier, updateDescription, _participants[0]);
+
+            // assert
+            Assert.Equal(updateDescription, sut.Likes.First(like => like.Id == likeIdentifier).Description);
+        }
+
+        [Fact]
+        public void AnInvitedParticipantCannotUpdateSomeoneElsesLike()
+        {
+            // arrange
+            const string initialDescription = "Initial description";
+            const string updateDescription = "Update to a description for my like";
+            var sut = GetDefaultRetrospectiveSut();
+            sut.InviteAParticipant(_participants[0]);
+            sut.InviteAParticipant(_participants[1]);
+
+            sut.AddLikeItem(initialDescription, _participants[0]);
+            Guid likeIdentifier = sut.Likes.First().Id;
+
+            // act & assert
+            Assert.Throws<RetrospectiveItemNotOwnedByParticipantException>(() => sut.UpdateLikeItem(likeIdentifier, updateDescription, _participants[1]));
+
+            // Assert
+            Assert.Equal(initialDescription, sut.Likes.First(l => l.Id == likeIdentifier).Description);
+        }
+
+        [Fact]
+        public void AnInvitedParticipantCannotUpdateALikeThatDoesNotExist()
+        {
+            // arrange
+            const string initialDescription = "Initial description";
+            const string updateDescription = "Update to a description for my like";
+            var sut = GetDefaultRetrospectiveSut();
+            sut.InviteAParticipant(_participants[0]);
+            sut.AddLikeItem(initialDescription, _participants[0]);
+            Guid likeIdentifier = sut.Likes.First().Id;
+
+            // act & assert
+            Assert.Throws<RetrospectiveItemDoesNotExistException>(() => sut.UpdateLikeItem(Guid.Empty, updateDescription, _participants[0]));
+
+            // Assert
+            Assert.Equal(initialDescription, sut.Likes.First(l => l.Id == likeIdentifier).Description);
         }
 
         #region Test Helpers

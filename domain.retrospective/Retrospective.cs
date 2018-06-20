@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using kaizen.domain.@base;
 using kaizen.domain.retrospective.events;
 using kaizen.domain.retrospective.exceptions;
@@ -44,6 +45,24 @@ namespace kaizen.domain.retrospective
             ApplyChange(new LikeAdded(description, participantId));
         }
 
+        public void UpdateLikeItem(Guid likeIdentifier, string description, string participantId)
+        {
+            CheckParticipant(participantId);
+            CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
+            var like = Likes.FirstOrDefault(l => l.Id == likeIdentifier);
+            if (like == null)
+            {
+                throw new RetrospectiveItemDoesNotExistException(nameof(Like), likeIdentifier);
+            }
+
+            if (like.ParticipantId != participantId)
+            {
+                throw new RetrospectiveItemNotOwnedByParticipantException(nameof(Like), likeIdentifier, participantId);
+            }
+
+            ApplyChange(new LikeUpdated(likeIdentifier, description));
+        }
+
         public void AddDislikeItem(string description, string participantId)
         {
             CheckParticipant(participantId);
@@ -74,22 +93,27 @@ namespace kaizen.domain.retrospective
 
         private void Apply(LikeAdded e)
         {
-            Likes.Add(new Like{Description = e.Description, ParticipantId = e.ParticipantId});
+            Likes.Add(new Like{Id = e.Id, Description = e.Description, ParticipantId = e.ParticipantId});
         }
 
         private void Apply(DislikeAdded e)
         {
-            Dislikes.Add(new Dislike { Description = e.Description, ParticipantId = e.ParticipantId });
+            Dislikes.Add(new Dislike { Id = e.Id, Description = e.Description, ParticipantId = e.ParticipantId });
         }
 
         private void Apply(ActionItemAdded e)
         {
-            ActionItems.Add(new ActionItem { Description = e.Description, ParticipantId = e.ParticipantId });
+            ActionItems.Add(new ActionItem { Id = e.Id, Description = e.Description, ParticipantId = e.ParticipantId });
         }
 
         private void Apply(RetrospectiveStateChanged e)
         {
             State = e.TargetState;
+        }
+
+        private void Apply(LikeUpdated e)
+        {
+            Likes.First(l => l.Id == e.LikeIdentifier).Description = e.Description;
         }
 
         #endregion
@@ -111,6 +135,5 @@ namespace kaizen.domain.retrospective
             }
         }
         #endregion
-
     }
 }

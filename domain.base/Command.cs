@@ -2,7 +2,7 @@
 
 namespace kaizen.domain.@base
 {
-    public class Command : IMessage
+    public abstract class Command : IMessage
     {
         public DateTime ReceivedOn { get; set; } = DateTime.UtcNow;
         public string Ip { get; set; } = "127.0.0.1";

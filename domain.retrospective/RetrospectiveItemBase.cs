@@ -8,5 +8,6 @@ namespace kaizen.domain.retrospective
     {
         public string Description { get; set; }
         public string ParticipantId { get; set; }
+        public Guid Id { get; set; }
     }
 }

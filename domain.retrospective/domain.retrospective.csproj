@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <AssemblyName>kaizen.domain.retrospective</AssemblyName>
+    <RootNamespace>kaizen.domain.retrospective</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\domain.base\domain.base.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -11,7 +11,9 @@ namespace kaizen.domain.retrospective.eventhandlers
         IHandles<RetrospectiveCreated>,
         IHandles<ParticipantAdded>,
         IHandles<LikeAdded>,
-        IHandles<LikeUpdated>
+        IHandles<LikeUpdated>,
+        IHandles<LikeDeleted>,
+        IHandles<RetrospectiveStateChanged>
     {
         private readonly IReadModelFacade _read;
         private readonly IReadModelPersistence _save;
@@ -59,6 +61,20 @@ namespace kaizen.domain.retrospective.eventhandlers
                 like.Description = message.Description;
                 await _save.Put(details);
             }
+        }
+
+        public async Task Handle(LikeDeleted message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            details.Likes.Remove(details.Likes.FirstOrDefault(l => l.Id == message.LikeIdentifier));
+            await _save.Put(details);
+        }
+
+        public async Task Handle(RetrospectiveStateChanged message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            details.State = message.TargetState;
+            await _save.Put(details);
         }
     }
 }

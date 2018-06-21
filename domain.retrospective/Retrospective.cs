@@ -30,7 +30,7 @@ namespace kaizen.domain.retrospective
         }
         public void InviteAParticipant(string participant)
         {
-            ApplyChange(new ParticipantAdded(participant));
+            ApplyChange(new ParticipantAdded(this.Id, participant));
         }
         public void StartCollectingActionItems(string participantId)
         {
@@ -38,7 +38,7 @@ namespace kaizen.domain.retrospective
             {
                 throw new ParticipantCannotChangeRetrospectiveStateException();
             }
-            ApplyChange(new RetrospectiveStateChanged(RetrospectiveState.CollectionActionItems));
+            ApplyChange(new RetrospectiveStateChanged(this.Id, RetrospectiveState.CollectionActionItems));
         }
 
         public void AddLikeItem(string description, string participantId)
@@ -94,7 +94,7 @@ namespace kaizen.domain.retrospective
             CheckParticipant(participantId);
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectionActionItems);
 
-            ApplyChange(new ActionItemAdded(description, participantId));
+            ApplyChange(new ActionItemAdded(this.Id, description, participantId));
         }
         public void UpdateActionItem(Guid actionItemIdentifier, string description, string participantId)
         {
@@ -102,7 +102,7 @@ namespace kaizen.domain.retrospective
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectionActionItems);
             CheckExistsAndCanModify(ActionItems, actionItemIdentifier, participantId);
 
-            ApplyChange(new ActionItemUpdated(actionItemIdentifier, description));
+            ApplyChange(new ActionItemUpdated(this.Id, actionItemIdentifier, description));
         }
         public void DeleteActionItem(Guid actionItemIdentifier, string participantId)
         {
@@ -110,7 +110,7 @@ namespace kaizen.domain.retrospective
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectionActionItems);
             CheckExistsAndCanModify(ActionItems, actionItemIdentifier, participantId);
 
-            ApplyChange(new ActionItemDeleted(actionItemIdentifier));
+            ApplyChange(new ActionItemDeleted(this.Id, actionItemIdentifier));
         }
         public void ToggleLikeVote(Guid likeIdentifier, string participantId)
         {
@@ -136,7 +136,7 @@ namespace kaizen.domain.retrospective
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectionActionItems);
             CheckExists(ActionItems, aiIdentifier);
 
-            ApplyChange(new ActionItemVoteToggled(aiIdentifier, participantId));
+            ApplyChange(new ActionItemVoteToggled(this.Id, aiIdentifier, participantId));
         }
 
         #region Private Setters

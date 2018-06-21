@@ -5,11 +5,13 @@ namespace kaizen.domain.retrospective.events
 {
     public class ActionItemVoteToggled : Event
     {
+        public Guid RetrospectiveId;
         public Guid ActionItemIdentifier;
         public string ParticipantId;
 
-        public ActionItemVoteToggled(Guid actionItemIdentifier, string participantId)
+        public ActionItemVoteToggled(Guid retrospectiveId, Guid actionItemIdentifier, string participantId)
         {
+            RetrospectiveId = retrospectiveId;
             ActionItemIdentifier = actionItemIdentifier;
             ParticipantId = participantId;
         }

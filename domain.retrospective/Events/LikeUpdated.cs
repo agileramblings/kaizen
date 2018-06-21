@@ -5,6 +5,7 @@ namespace kaizen.domain.retrospective.events
 {
     public class LikeUpdated : Event
     {
+        public Guid RetrospectiveId;
         public string Description;
         public Guid LikeIdentifier;
 

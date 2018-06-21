@@ -1,4 +1,5 @@
-﻿using kaizen.domain.@base;
+﻿using System;
+using kaizen.domain.@base;
 
 namespace kaizen.domain.retrospective.events
 {
@@ -6,9 +7,11 @@ namespace kaizen.domain.retrospective.events
     {
         public string Description;
         public string ParticipantId;
+        public Guid RetrospectiveId;
 
-        public ActionItemAdded(string description, string participantId)
+        public ActionItemAdded(Guid retrospectiveId, string description, string participantId)
         {
+            RetrospectiveId = retrospectiveId;
             Description = description;
             ParticipantId = participantId;
         }

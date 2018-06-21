@@ -9,10 +9,10 @@ namespace kaizen.domain.retrospective.readmodel
         public RetrospectiveState State;
         public string Owner;
         public DateTime CreatedOn;
-        public List<string> Participants;
-        public List<Like> Likes;
-        public List<Dislike> Dislikes;
-        public List<ActionItem> ActionItems;
+        public List<string> Participants { get; set; } = new List<string>();
+        public List<Like> Likes { get; set; } = new List<Like>();
+        public List<Dislike> Dislikes { get; set; } = new List<Dislike>();
+        public List<ActionItem> ActionItems { get; set; } = new List<ActionItem>();
 
         public int LikesCount => Likes?.Count ?? 0;
         public int DislikesCount => Dislikes?.Count ?? 0;

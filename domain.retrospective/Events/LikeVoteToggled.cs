@@ -7,6 +7,7 @@ namespace kaizen.domain.retrospective.events
 {
     public class LikeVoteToggled : Event
     {
+        public Guid RetrospectiveId;
         public Guid LikeIdentifier;
         public string ParticipantId;
 

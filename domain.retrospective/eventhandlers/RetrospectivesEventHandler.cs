@@ -7,7 +7,8 @@ using kaizen.domain.retrospective.readmodel;
 namespace kaizen.domain.retrospective.eventhandlers
 {
     public class RetrospectivesEventHandler : 
-        IHandles<RetrospectiveCreated>
+        IHandles<RetrospectiveCreated>,
+        IHandles<ParticipantAdded>
     {
         private readonly IReadModelFacade _read;
         private readonly IReadModelPersistence _save;
@@ -27,6 +28,13 @@ namespace kaizen.domain.retrospective.eventhandlers
                 CreatedOn = message.CreatedOn
             };
             await _save.Put(newGame);
+        }
+
+        public async Task Handle(ParticipantAdded message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            details.Participants.Add(message.ParticipantIdentifier);
+            await _save.Put(details);
         }
     }
 }

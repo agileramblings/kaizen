@@ -5,9 +5,12 @@ namespace kaizen.domain.retrospective.events
 {
     public class RetrospectiveStateChanged : Event
     {
+        public Guid RetrospectiveId;
         public RetrospectiveState TargetState;
-        public RetrospectiveStateChanged(RetrospectiveState targetState)
+
+        public RetrospectiveStateChanged(Guid retrospectiveId, RetrospectiveState targetState)
         {
+            RetrospectiveId = retrospectiveId;
             TargetState = targetState;
         }
     }

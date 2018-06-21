@@ -44,52 +44,69 @@ namespace api.Controllers
         }
 
         [HttpPost("{ownerIdentifier}")]
-        public IActionResult Post(string ownerIdentifier)
+        public async Task<IActionResult> Post(string ownerIdentifier)
         {
             var newRetrospectiveId = Guid.NewGuid();
             var cmd = new CreateRetrospective(newRetrospectiveId, ownerIdentifier);
-            _cmdSender.Send(cmd);
+            await _cmdSender.Send(cmd);
             return RedirectToAction("Get", new { retrospectiveId = newRetrospectiveId });
         }
 
-        [HttpPut("{retrospectiveId}/participant/{participantId}")]
-        public void Put(int retrospectiveId, string participantId)
+        [HttpPost("{retrospectiveId}/participant/{participantId}")]
+        public async Task<IActionResult> Put(Guid retrospectiveId, string participantId)
         {
+            var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
+            var cmd = new AddParticipant(retrospectiveId, participantId);
+            await _cmdSender.Send(cmd);
+            return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
         }
 
         [HttpPost("{retrospectiveId}/like/{participantId}")]
-        public void CreateLike(int retrospectiveId, string participantId, [FromBody] string description)
+        public async Task<IActionResult> CreateLike(Guid retrospectiveId, string participantId, [FromBody] string description)
         {
+            var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
+            return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
         }
 
         [HttpPost("{retrospectiveId}/dislike/{participantId}")]
-        public void CreateDislike(int retrospectiveId, string participantId, [FromBody] string description)
+        public async Task<IActionResult> CreateDislike(Guid retrospectiveId, string participantId, [FromBody] string description)
         {
+            var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
+            return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
         }
 
         [HttpPost("{retrospectiveId}/actionitem/{participantId}")]
-        public void CreateActionItem(int retrospectiveId, string participantId, [FromBody] string description)
+        public async Task<IActionResult> CreateActionItem(Guid retrospectiveId, string participantId, [FromBody] string description)
         {
+            var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
+            return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
         }
 
-        [HttpPut("{retrospectiveId}/like/{participantId}")]
-        public void UpdateLike(int retrospectiveId, string participantId, [FromBody] string description)
+        [HttpPost("{retrospectiveId}/like/{participantId}")]
+        public async Task<IActionResult> UpdateLike(Guid retrospectiveId, string participantId, [FromBody] string description)
         {
+            var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
+            return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
         }
 
-        [HttpPut("{retrospectiveId}/dislike/{participantId}")]
-        public void UpdateDislike(int retrospectiveId, string participantId, [FromBody] string description)
+        [HttpPost("{retrospectiveId}/dislike/{participantId}")]
+        public async Task<IActionResult> UpdateDislike(Guid retrospectiveId, string participantId, [FromBody] string description)
         {
+            var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
+            return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
         }
 
-        [HttpPut("{retrospectiveId}/actionitem/{participantId}")]
-        public void UpdateActionItem(int retrospectiveId, string participantId, [FromBody] string description)
+        [HttpPost("{retrospectiveId}/actionitem/{participantId}")]
+        public async Task<IActionResult> UpdateActionItem(Guid retrospectiveId, string participantId, [FromBody] string description)
         {
+            var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
+            return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
         }
 
         [HttpDelete("{retrospectiveId}")]
-        public void Delete(int retrospectiveId)
+        public IActionResult Delete(Guid retrospectiveId)
         {
+            return Ok();
         }
     }
 }

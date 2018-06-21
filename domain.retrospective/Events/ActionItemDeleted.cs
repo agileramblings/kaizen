@@ -6,9 +6,11 @@ namespace kaizen.domain.retrospective.events
     public class ActionItemDeleted : Event
     {
         public Guid ActionItemIdentifier;
+        public Guid RetrospectiveId;
 
-        public ActionItemDeleted(Guid actionItemIdentifier)
+        public ActionItemDeleted(Guid retrospectiveId, Guid actionItemIdentifier)
         {
+            RetrospectiveId = retrospectiveId;
             ActionItemIdentifier = actionItemIdentifier;
         }
     }

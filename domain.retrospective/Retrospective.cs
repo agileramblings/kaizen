@@ -20,6 +20,10 @@ namespace kaizen.domain.retrospective
         public List<Dislike> Dislikes { get; } = new List<Dislike>();
         public List<ActionItem> ActionItems { get; } = new List<ActionItem>();
 
+        public Retrospective()
+        {
+        }
+
         public Retrospective(Guid newRetrospectiveId, string owner)
         {
             ApplyChange(new RetrospectiveCreated(newRetrospectiveId, owner));

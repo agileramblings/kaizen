@@ -38,6 +38,7 @@ namespace kaizen.api
             // Autofac
             var builder = new ContainerBuilder();
             builder.Populate(services);
+
             builder.RegisterModule(new AutofacModule());
 
             // ReadModel Persistence

@@ -3,11 +3,6 @@ using Autofac;
 
 namespace kaizen.domain.@base.messaging
 {
-    public interface ICommandHandlerFactory
-    {
-        IEnumerable<ICommandHandler<T>> GetHandlers<T>() where T : Command;
-    }
-
     public class CommandHandlerFactory : ICommandHandlerFactory
     {
         private readonly IComponentContext _container;

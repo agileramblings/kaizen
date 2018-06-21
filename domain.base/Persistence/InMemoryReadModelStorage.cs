@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace kaizen.domain.@base.persistence
@@ -11,12 +12,12 @@ namespace kaizen.domain.@base.persistence
         public Task<IEnumerable<T>> GetAll<T>() where T : ReadModelBase, new()
         {
             var type = typeof(T);
-            var retval = new List<T>() as IEnumerable<T>;
+            var retval = new List<T>();
             if (!_storage.ContainsKey(type))
             {
-                return Task.FromResult(retval);
+                return Task.FromResult((IEnumerable<T>)retval);
             }
-            return Task.FromResult(_storage[type] as IEnumerable<T>);
+            return Task.FromResult((IEnumerable<T>)_storage[type].Values.Select(v => v as T).ToList());
         }
 
         public Task<T> Get<T>(Guid id) where T : ReadModelBase, new()

@@ -5,6 +5,7 @@ using System.Linq;
 using kaizen.domain.@base;
 using kaizen.domain.retrospective.events;
 using kaizen.domain.retrospective.exceptions;
+using kaizen.domain.retrospective.Exceptions;
 
 // ReSharper disable UnusedMember.Local
 
@@ -14,7 +15,7 @@ namespace kaizen.domain.retrospective
     {
         public DateTime CreatedOn { get; private set; }
         public string Owner { get; private set; }
-        public RetrospectiveState State { get; private set; } = RetrospectiveState.CollectingSuggestions;
+        public RetrospectiveState State { get; set; } = RetrospectiveState.CollectingSuggestions;
         public List<string> Participants { get; } = new List<string>();
         public List<Like> Likes { get; } = new List<Like>();
         public List<Dislike> Dislikes { get; } = new List<Dislike>();
@@ -88,6 +89,18 @@ namespace kaizen.domain.retrospective
             CheckExistsAndCanModify(Dislikes, dislikeIdentifier, participantId);
 
             ApplyChange(new DislikeDeleted(dislikeIdentifier));
+        }
+
+        public void UpdateRetroState(string participantId, RetrospectiveState state)
+        {
+            CheckParticipant(participantId);
+            CheckOwner(participantId);
+            if (State == RetrospectiveState.Done)
+            {
+                throw new RetrospectiveIsInDoneState();
+            }
+            
+            ApplyChange(new RetrospectiveStateChanged(Id, state));
         }
 
         public void AddActionItem(string description, string participantId)
@@ -223,6 +236,14 @@ namespace kaizen.domain.retrospective
             if (!Participants.Contains(participantId))
             {
                 throw new UninvitedParticipantException();
+            }
+        }
+
+        private void CheckOwner(string participantId)
+        {
+            if (Owner != participantId)
+            {
+                throw new RetrospectiveItemNotOwnedByParticipantException(nameof(Retrospective), Id, participantId);
             }
         }
 

@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using Autofac;
 using kaizen.domain.@base;
-using kaizen.domain.@base.messaging;
 using kaizen.domain.@base.persistence;
 using kaizen.domain.retrospective;
 using kaizen.domain.retrospective.commands;
@@ -108,8 +105,17 @@ namespace api.Controllers
             return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
         }
 
+        [HttpPost("{retrospectiveId}/state")]
+        public async Task<IActionResult> UpdateRetroState(string participantId, Guid retrospectiveId, RetrospectiveState state)
+        {
+            var cmd = new UpdateRetroState(retrospectiveId, participantId, state);
+            await _cmdSender.Send(cmd);
+            var response = RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
+            return response;
+        }
+
         [HttpDelete("{retrospectiveId}")]
-        public IActionResult Delete(Guid retrospectiveId)
+        public IActionResult Delete(string participantId, Guid retrospectiveId)
         {
             return Ok();
         }

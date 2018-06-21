@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using kaizen.domain.@base;
 
 namespace kaizen.domain.@base.persistence
 {

@@ -22,7 +22,7 @@ namespace kaizen.domain.retrospective.tests
 
             // assert
             var events = sut.GetUncommittedChanges().ToList();
-            Assert.Equal(4, events.Count);
+            Assert.Equal(5, events.Count);
             Assert.Equal(typeof(ActionItemAdded), events.Last().GetType());
 
             Assert.Single(sut.ActionItems);

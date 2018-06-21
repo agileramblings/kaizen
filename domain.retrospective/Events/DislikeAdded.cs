@@ -6,11 +6,14 @@ namespace kaizen.domain.retrospective.events
     public class DislikeAdded : Event
     {
         public Guid RetrospectiveId;
+        public Guid DislikeId;
         public string Description;
         public string ParticipantId;
 
-        public DislikeAdded(string description, string participantId)
+        public DislikeAdded(Guid retrospectiveId, Guid dislikeId, string description, string participantId)
         {
+            RetrospectiveId = retrospectiveId;
+            DislikeId = dislikeId;
             Description = description;
             ParticipantId = participantId;
         }

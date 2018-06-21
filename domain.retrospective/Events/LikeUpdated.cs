@@ -9,8 +9,9 @@ namespace kaizen.domain.retrospective.events
         public string Description;
         public Guid LikeIdentifier;
 
-        public LikeUpdated(Guid likeIdentifier, string description)
+        public LikeUpdated(Guid retrospectiveId, Guid likeIdentifier, string description)
         {
+            RetrospectiveId = retrospectiveId;
             LikeIdentifier = likeIdentifier;
             Description = description;
         }

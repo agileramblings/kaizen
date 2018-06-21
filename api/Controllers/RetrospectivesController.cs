@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Autofac;
 using kaizen.domain.@base;
@@ -65,7 +66,19 @@ namespace api.Controllers
         public async Task<IActionResult> CreateLike(Guid retrospectiveId, string participantId, [FromBody] string description)
         {
             var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
+            var cmd = new AddLike(retrospectiveId, description, participantId);
+            await _cmdSender.Send(cmd);
             return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
+        }
+
+        [HttpPost("{retrospectiveId}/like/{likeId}/{participantId}")]
+        public async Task<IActionResult> UpdateLike(Guid retrospectiveId, Guid likeId, string participantId, [FromBody] string description)
+        {
+            var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
+            var cmd = new UpdateLike(retrospectiveId, likeId, description, participantId);
+            await _cmdSender.Send(cmd);
+            var response = RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
+            return response;
         }
 
         [HttpPost("{retrospectiveId}/dislike/{participantId}")]
@@ -75,6 +88,12 @@ namespace api.Controllers
             return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
         }
 
+        [HttpPost("{retrospectiveId}/dislike/{dislikeId}/{participantId}")]
+        public async Task<IActionResult> UpdateDislike(Guid retrospectiveId, Guid dislikeId, string participantId, [FromBody] string description)
+        {
+            var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
+            return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
+        }
         [HttpPost("{retrospectiveId}/actionitem/{participantId}")]
         public async Task<IActionResult> CreateActionItem(Guid retrospectiveId, string participantId, [FromBody] string description)
         {
@@ -82,22 +101,8 @@ namespace api.Controllers
             return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
         }
 
-        [HttpPost("{retrospectiveId}/like/{participantId}")]
-        public async Task<IActionResult> UpdateLike(Guid retrospectiveId, string participantId, [FromBody] string description)
-        {
-            var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
-            return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
-        }
-
-        [HttpPost("{retrospectiveId}/dislike/{participantId}")]
-        public async Task<IActionResult> UpdateDislike(Guid retrospectiveId, string participantId, [FromBody] string description)
-        {
-            var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
-            return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
-        }
-
-        [HttpPost("{retrospectiveId}/actionitem/{participantId}")]
-        public async Task<IActionResult> UpdateActionItem(Guid retrospectiveId, string participantId, [FromBody] string description)
+        [HttpPost("{retrospectiveId}/actionitem/{actionItemId}/{participantId}")]
+        public async Task<IActionResult> UpdateActionItem(Guid retrospectiveId, Guid actionItemId, string participantId, [FromBody] string description)
         {
             var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
             return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });

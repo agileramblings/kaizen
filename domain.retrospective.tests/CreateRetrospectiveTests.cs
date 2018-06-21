@@ -18,9 +18,11 @@ namespace kaizen.domain.retrospective.tests
 
             // assert proper events created
             var events = sut.GetUncommittedChanges().ToList();
-            Assert.Single(events);
+            Assert.Equal(2, events.Count);
             Assert.Equal(typeof(RetrospectiveCreated), events.First().GetType());
             Assert.Equal(OwnerName, ((RetrospectiveCreated)events.First()).Owner);
+            Assert.Equal(typeof(ParticipantAdded), events.Last().GetType());
+            Assert.Equal(OwnerName, ((ParticipantAdded)events.Last()).ParticipantIdentifier);
             Assert.NotEqual(default(DateTime), ((RetrospectiveCreated)events.First()).CreatedOn);
 
             // assert proper changes happened to aggregate
@@ -39,10 +41,11 @@ namespace kaizen.domain.retrospective.tests
 
             // assert
             var events = sut.GetUncommittedChanges().ToList();
-            Assert.Equal(2, events.Count);
+            Assert.Equal(3, events.Count);
             Assert.Equal(typeof(ParticipantAdded), events.Last().GetType());
-            Assert.Single(sut.Participants);
-            Assert.Equal(_participants[0], sut.Participants[0]);
+            Assert.Equal(2, sut.Participants.Count);
+            Assert.Equal(OwnerName, sut.Participants.First());
+            Assert.Equal(_participants[0], sut.Participants.Last());
         }
 
         [Fact]
@@ -57,11 +60,11 @@ namespace kaizen.domain.retrospective.tests
 
             // assert
             var events = sut.GetUncommittedChanges().ToList();
-            Assert.Equal(3, events.Count);
+            Assert.Equal(4, events.Count);
             Assert.Equal(typeof(ParticipantAdded), events.Last().GetType());
-            Assert.Equal(2, sut.Participants.Count);
-            Assert.Equal(_participants[0], sut.Participants[0]);
-            Assert.Equal(_participants[1], sut.Participants[1]);
+            Assert.Equal(3, sut.Participants.Count);
+            Assert.Equal(_participants[0], sut.Participants[1]);
+            Assert.Equal(_participants[1], sut.Participants[2]);
         }
 
         [Fact]

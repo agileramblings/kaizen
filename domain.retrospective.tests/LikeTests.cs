@@ -21,7 +21,7 @@ namespace kaizen.domain.retrospective.tests
 
             // assert
             var events = sut.GetUncommittedChanges().ToList();
-            Assert.Equal(3, events.Count);
+            Assert.Equal(4, events.Count);
             Assert.Equal(typeof(LikeAdded), events.Last().GetType());
 
             Assert.Single(sut.Likes);

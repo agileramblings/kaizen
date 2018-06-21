@@ -27,6 +27,7 @@ namespace kaizen.domain.retrospective
         public Retrospective(Guid newRetrospectiveId, string owner)
         {
             ApplyChange(new RetrospectiveCreated(newRetrospectiveId, owner));
+            ApplyChange(new ParticipantAdded(this.Id, owner));
         }
         public void InviteAParticipant(string participant)
         {
@@ -45,8 +46,8 @@ namespace kaizen.domain.retrospective
         {
             CheckParticipant(participantId);
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
-
-            ApplyChange(new LikeAdded(description, participantId));
+            
+            ApplyChange(new LikeAdded(this.Id, Guid.NewGuid(), description, participantId));
         }
         public void UpdateLikeItem(Guid likeIdentifier, string description, string participantId)
         {
@@ -54,7 +55,7 @@ namespace kaizen.domain.retrospective
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
             CheckExistsAndCanModify(Likes, likeIdentifier, participantId);
 
-            ApplyChange(new LikeUpdated(likeIdentifier, description));
+            ApplyChange(new LikeUpdated(this.Id, likeIdentifier, description));
         }
         public void DeleteLikeItem(Guid likeIdentifier, string participantId)
         {
@@ -70,7 +71,7 @@ namespace kaizen.domain.retrospective
             CheckParticipant(participantId);
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
 
-            ApplyChange(new DislikeAdded(description, participantId));
+            ApplyChange(new DislikeAdded(this.Id, Guid.NewGuid(), description, participantId));
         }
         public void UpdateDislikeItem(Guid dislikeIdentifier, string description, string participantId)
         {
@@ -94,7 +95,7 @@ namespace kaizen.domain.retrospective
             CheckParticipant(participantId);
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectionActionItems);
 
-            ApplyChange(new ActionItemAdded(this.Id, description, participantId));
+            ApplyChange(new ActionItemAdded(this.Id, Guid.NewGuid(), description, participantId));
         }
         public void UpdateActionItem(Guid actionItemIdentifier, string description, string participantId)
         {
@@ -154,15 +155,15 @@ namespace kaizen.domain.retrospective
         }
         private void Apply(LikeAdded e)
         {
-            Likes.Add(new Like{Id = e.Id, Description = e.Description, ParticipantId = e.ParticipantId});
+            Likes.Add(new Like{Id = e.LikeId, Description = e.Description, ParticipantId = e.ParticipantId});
         }
         private void Apply(DislikeAdded e)
         {
-            Dislikes.Add(new Dislike { Id = e.Id, Description = e.Description, ParticipantId = e.ParticipantId });
+            Dislikes.Add(new Dislike { Id = e.DislikeId, Description = e.Description, ParticipantId = e.ParticipantId });
         }
         private void Apply(ActionItemAdded e)
         {
-            ActionItems.Add(new ActionItem { Id = e.Id, Description = e.Description, ParticipantId = e.ParticipantId });
+            ActionItems.Add(new ActionItem { Id = e.ActionItemId, Description = e.Description, ParticipantId = e.ParticipantId });
         }
         private void Apply(RetrospectiveStateChanged e)
         {

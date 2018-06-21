@@ -9,6 +9,7 @@ namespace kaizen.domain.retrospective.commandhandlers
         ICommandHandler<CreateRetrospective>,
         ICommandHandler<AddParticipant>,
         ICommandHandler<AddLike>,
+        ICommandHandler<UpdateLike>,
         ICommandHandler<AddDislike>,
         ICommandHandler<AddActionItem>
     {
@@ -21,36 +22,44 @@ namespace kaizen.domain.retrospective.commandhandlers
 
         public async Task Handle(AddActionItem command)
         {
-            var aggregateGame = await _store.GetById<Retrospective>(command.RetrospectiveId);
-            aggregateGame.AddLikeItem(command.Description, command.ParticipantId);
-            await _store.Save(aggregateGame, aggregateGame.Version);
+            var retrospective = await _store.GetById<Retrospective>(command.RetrospectiveId);
+            retrospective.AddLikeItem(command.Description, command.ParticipantId);
+            await _store.Save(retrospective, retrospective.Version);
         }
 
         public async Task Handle(AddDislike command)
         {
-            var aggregateGame = await _store.GetById<Retrospective>(command.RetrospectiveId);
-            aggregateGame.AddLikeItem(command.Description, command.ParticipantId);
-            await _store.Save(aggregateGame, aggregateGame.Version);
+            var retrospective = await _store.GetById<Retrospective>(command.RetrospectiveId);
+            retrospective.AddLikeItem(command.Description, command.ParticipantId);
+            await _store.Save(retrospective, retrospective.Version);
         }
 
         public async Task Handle(AddLike command)
         {
-            var aggregateGame = await _store.GetById<Retrospective>(command.RetrospectiveId);
-            aggregateGame.AddLikeItem(command.Description, command.ParticipantId);
-            await _store.Save(aggregateGame, aggregateGame.Version);
+            var retrospective = await _store.GetById<Retrospective>(command.RetrospectiveId);
+            retrospective.AddLikeItem(command.Description, command.ParticipantId);
+            await _store.Save(retrospective, retrospective.Version);
+        }
+        public async Task Handle(UpdateLike command)
+        {
+            var retrospective = await _store.GetById<Retrospective>(command.RetrospectiveId);
+            retrospective.UpdateLikeItem(command.LikeId, command.Description, command.ParticipantId);
+            await _store.Save(retrospective, retrospective.Version);
         }
 
         public async Task Handle(AddParticipant command)
         {
-            var aggregateGame = await _store.GetById<Retrospective>(command.RetrospectiveId);
-            aggregateGame.InviteAParticipant(command.ParticipantId);
-            await _store.Save(aggregateGame, aggregateGame.Version);
+            var retrospective = await _store.GetById<Retrospective>(command.RetrospectiveId);
+            retrospective.InviteAParticipant(command.ParticipantId);
+            await _store.Save(retrospective, retrospective.Version);
         }
 
         public async Task Handle(CreateRetrospective command)
         {
-            var newGame = new Retrospective(command.RetrospectiveId, command.Owner);
-            await _store.Save(newGame, -1);
+            var newRetrospective = new Retrospective(command.RetrospectiveId, command.Owner);
+            await _store.Save(newRetrospective, -1);
         }
+
+
     }
 }

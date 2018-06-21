@@ -43,9 +43,10 @@ namespace kaizen.domain.retrospective.eventhandlers
         public async Task Handle(LikeAdded message)
         {
             var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
-            details.Likes.Add(new Like {Id = message.LikeId,
-                Description = message.Description,
-                ParticipantId = message.ParticipantId});
+            details.Likes.Add(new Like {
+                Id = message.LikeId,
+                Description = message.Description
+            });
             await _save.Put(details);
         }
 

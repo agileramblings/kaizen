@@ -1,31 +1,48 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div>
   <h1>
-    Welcome to {{ title }}!
+    Welcome to {{ title }}
   </h1>
   <h3>{{ subtitle }}</h3>
 
   <mat-form-field class="search-form">
-    <input matInput placeholder="Search Picture" type="text">
+    <input matInput placeholder="Participant Id (email address)" type="text">
   </mat-form-field>
-  <button button="submit" mat-raised-button color="primary">Search</button>
   <br>
 
   <mat-grid-list cols="3" rowHeight="2:1">
     <mat-grid-tile>
-      <mat-grid-tile-header>Likes {{ retrospective.LikesCount }}</mat-grid-tile-header>
+      <mat-grid-tile-header>
+          <mat-toolbar style="background: transparent">
+            <span style="font-size: 2em;">Likes {{ retrospective.LikesCount }}</span>
+            <span class="expand-fill"></span>
+            <button><mat-icon>add</mat-icon></button>
+          </mat-toolbar>
+      </mat-grid-tile-header>
       <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="left">
         <mat-card *ngFor="let item of retrospective.Likes">{{ item.Description }}</mat-card>
       </div>
     </mat-grid-tile>
     <mat-grid-tile>
-      <mat-grid-tile-header>Dislikes {{ retrospective.DislikesCount }}</mat-grid-tile-header>
+        <mat-grid-tile-header>
+            <mat-toolbar style="background: transparent">
+              <span style="font-size: 2em;">Dislikes {{ retrospective.DisikesCount }}</span>
+              <span class="expand-fill"></span>
+              <button><mat-icon>add</mat-icon></button>
+            </mat-toolbar>
+        </mat-grid-tile-header>
       <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="left">
         <mat-card *ngFor="let item of retrospective.Dislikes">{{ item.Description }}</mat-card>
       </div>
     </mat-grid-tile>
     <mat-grid-tile>
-      <mat-grid-tile-header>Action Items {{ retrospective.ActionItemsCount }}</mat-grid-tile-header>
+        <mat-grid-tile-header>
+            <mat-toolbar style="background: transparent">
+              <span style="font-size: 2em;">Action Items {{ retrospective.ActionItemsCount }}</span>
+              <span class="expand-fill"></span>
+              <button><mat-icon>add</mat-icon></button>
+            </mat-toolbar>
+        </mat-grid-tile-header>
       <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="left">
         <mat-card *ngFor="let item of retrospective.ActionItems">{{ item.Description }}</mat-card>
       </div>

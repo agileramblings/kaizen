@@ -114,6 +114,33 @@ namespace api.Controllers
             return response;
         }
 
+        [HttpPost("{retrospectiveId}/like/{likeId}/tooglevote")]
+        public async Task<IActionResult> ToogleLikeVote(string participantId, Guid retrospectiveId, Guid likeId)
+        {
+            var cmd = new Vote(retrospectiveId, likeId, Vote.VoteItemType.Like, participantId);
+            await _cmdSender.Send(cmd);
+            var response = RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
+            return response;
+        }
+
+        [HttpPost("{retrospectiveId}/dislike/{dislikeId}/tooglevote")]
+        public async Task<IActionResult> ToogleDisLikeVote(string participantId, Guid retrospectiveId, Guid dislikeId)
+        {
+            var cmd = new Vote(retrospectiveId, dislikeId, Vote.VoteItemType.DisLike, participantId);
+            await _cmdSender.Send(cmd);
+            var response = RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
+            return response;
+        }
+
+        [HttpPost("{retrospectiveId}/actionitem/{actionItemId}/tooglevote")]
+        public async Task<IActionResult> ToogleActionItemVote(string participantId, Guid retrospectiveId, Guid actionItemId)
+        {
+            var cmd = new Vote(retrospectiveId, actionItemId, Vote.VoteItemType.ActionItem, participantId);
+            await _cmdSender.Send(cmd);
+            var response = RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
+            return response;
+        }
+
         [HttpDelete("{retrospectiveId}")]
         public IActionResult Delete(string participantId, Guid retrospectiveId)
         {

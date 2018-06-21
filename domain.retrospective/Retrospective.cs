@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using kaizen.domain.@base;
@@ -56,7 +55,7 @@ namespace kaizen.domain.retrospective
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
             CheckExistsAndCanModify(Likes, likeIdentifier, participantId);
 
-            ApplyChange(new LikeUpdated(this.Id, likeIdentifier, description));
+            ApplyChange(new LikeUpdated(Id, likeIdentifier, description));
         }
         public void DeleteLikeItem(Guid likeIdentifier, string participantId)
         {
@@ -132,7 +131,7 @@ namespace kaizen.domain.retrospective
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
             CheckExists(Likes, likeIdentifier);
 
-            ApplyChange(new LikeVoteToggled(likeIdentifier, participantId));
+            ApplyChange(new LikeVoteToggled(Id, likeIdentifier, participantId));
         }
 
         public void ToggleDislikeVote(Guid dislikeIdentifier, string participantId)
@@ -141,7 +140,7 @@ namespace kaizen.domain.retrospective
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
             CheckExists(Dislikes, dislikeIdentifier);
 
-            ApplyChange(new DislikeVoteToggled(dislikeIdentifier, participantId));
+            ApplyChange(new DislikeVoteToggled(Id, dislikeIdentifier, participantId));
         }
 
         public void ToggleActionItemVote(Guid aiIdentifier, string participantId)
@@ -150,7 +149,7 @@ namespace kaizen.domain.retrospective
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectionActionItems);
             CheckExists(ActionItems, aiIdentifier);
 
-            ApplyChange(new ActionItemVoteToggled(this.Id, aiIdentifier, participantId));
+            ApplyChange(new ActionItemVoteToggled(Id, aiIdentifier, participantId));
         }
 
         #region Private Setters

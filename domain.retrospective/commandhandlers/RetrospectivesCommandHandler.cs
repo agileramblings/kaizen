@@ -12,7 +12,8 @@ namespace kaizen.domain.retrospective.commandhandlers
         ICommandHandler<UpdateLike>,
         ICommandHandler<AddDislike>,
         ICommandHandler<AddActionItem>,
-        ICommandHandler<UpdateRetroState>
+        ICommandHandler<UpdateRetroState>,
+        ICommandHandler<Vote>
     {
         private readonly IAggregateRepository _store;
 
@@ -65,7 +66,26 @@ namespace kaizen.domain.retrospective.commandhandlers
         {
             var retrospective = await _store.GetById<Retrospective>(command.RetrospectiveId);
             retrospective.UpdateRetroState(command.ParticipantId, command.State);
-            await _store.Save(retrospective, -1);
+            await _store.Save(retrospective, retrospective.Version);
+        }
+
+        public async Task Handle(Vote command)
+        {
+            var retrospective = await _store.GetById<Retrospective>(command.RetrospectiveId);
+            switch (command.ItemVoteType)
+            {
+                case Vote.VoteItemType.Like:
+                    retrospective.ToggleLikeVote(command.ItemId, command.ParticipantId);
+                    break;
+                case Vote.VoteItemType.DisLike:
+                    retrospective.ToggleDislikeVote(command.ItemId, command.ParticipantId);
+                    break;
+                case Vote.VoteItemType.ActionItem:
+                    retrospective.ToggleActionItemVote(command.ItemId, command.ParticipantId);
+                    break;
+            }
+
+            await _store.Save(retrospective, retrospective.Version);
         }
     }
 }

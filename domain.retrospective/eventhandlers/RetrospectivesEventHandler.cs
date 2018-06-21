@@ -13,7 +13,10 @@ namespace kaizen.domain.retrospective.eventhandlers
         IHandles<LikeAdded>,
         IHandles<LikeUpdated>,
         IHandles<LikeDeleted>,
-        IHandles<RetrospectiveStateChanged>
+        IHandles<RetrospectiveStateChanged>,
+        IHandles<LikeVoteToggled>,
+        IHandles<DislikeVoteToggled>,
+        IHandles<ActionItemVoteToggled>
     {
         private readonly IReadModelFacade _read;
         private readonly IReadModelPersistence _save;
@@ -74,6 +77,30 @@ namespace kaizen.domain.retrospective.eventhandlers
         {
             var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
             details.State = message.TargetState;
+            await _save.Put(details);
+        }
+
+        public async Task Handle(LikeVoteToggled message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            var likeItem = details.Likes.First(c => c.Id == message.LikeIdentifier);
+            likeItem.ToggleVote(message.ParticipantId);
+            await _save.Put(details);
+        }
+
+        public async Task Handle(DislikeVoteToggled message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            var disLikeItem = details.Dislikes.First(c => c.Id == message.DislikeIdentifier);
+            disLikeItem.ToggleVote(message.ParticipantId);
+            await _save.Put(details);
+        }
+
+        public async Task Handle(ActionItemVoteToggled message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            var actionItem = details.ActionItems.First(c => c.Id == message.ActionItemIdentifier);
+            actionItem.ToggleVote(message.ParticipantId);
             await _save.Put(details);
         }
     }

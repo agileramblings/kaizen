@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using kaizen.domain.@base;
 
 namespace kaizen.domain.retrospective.events
@@ -11,8 +9,9 @@ namespace kaizen.domain.retrospective.events
         public Guid LikeIdentifier;
         public string ParticipantId;
 
-        public LikeVoteToggled(Guid likeIdentifier, string participantId)
+        public LikeVoteToggled(Guid retrospectiveId, Guid likeIdentifier, string participantId)
         {
+            RetrospectiveId = retrospectiveId;
             LikeIdentifier = likeIdentifier;
             ParticipantId = participantId;
         }

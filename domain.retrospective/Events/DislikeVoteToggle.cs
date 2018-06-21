@@ -9,8 +9,9 @@ namespace kaizen.domain.retrospective.events
         public Guid DislikeIdentifier;
         public string ParticipantId;
 
-        public DislikeVoteToggled(Guid dislikeIdentifier, string participantId)
+        public DislikeVoteToggled(Guid retrospectiveId, Guid dislikeIdentifier, string participantId)
         {
+            RetrospectiveId = retrospectiveId;
             DislikeIdentifier = dislikeIdentifier;
             ParticipantId = participantId;
         }

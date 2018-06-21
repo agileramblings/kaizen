@@ -14,5 +14,3 @@ export class RetrospectiveDetails {
   DislikesCount: number;
   ActionItemsCount: number;
 }
-
-

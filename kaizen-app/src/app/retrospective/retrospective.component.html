@@ -1,0 +1,38 @@
+<mat-grid-list cols="3" rowHeight="800">
+  <mat-grid-tile>
+    <mat-grid-tile-header>
+        <mat-toolbar style="background: transparent">
+          <span style="font-size: 2em;">Likes {{ retrospective.LikesCount }}</span>
+          <span class="expand-fill"></span>
+          <button><mat-icon>add</mat-icon></button>
+        </mat-toolbar>
+    </mat-grid-tile-header>
+    <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="start">
+      <mat-card *ngFor="let item of retrospective.Likes">{{ item.Description }}</mat-card>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile>
+      <mat-grid-tile-header>
+          <mat-toolbar style="background: transparent">
+            <span style="font-size: 2em;">Dislikes {{ retrospective.DisikesCount }}</span>
+            <span class="expand-fill"></span>
+            <button><mat-icon>add</mat-icon></button>
+          </mat-toolbar>
+      </mat-grid-tile-header>
+    <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="start">
+      <mat-card *ngFor="let item of retrospective.Dislikes">{{ item.Description }}</mat-card>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile>
+      <mat-grid-tile-header>
+          <mat-toolbar style="background: transparent">
+            <span style="font-size: 2em;">Action Items {{ retrospective.ActionItemsCount }}</span>
+            <span class="expand-fill"></span>
+            <button><mat-icon>add</mat-icon></button>
+          </mat-toolbar>
+      </mat-grid-tile-header>
+    <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="start">
+      <mat-card *ngFor="let item of retrospective.ActionItems">{{ item.Description }}</mat-card>
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>

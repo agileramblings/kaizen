@@ -6,10 +6,12 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { AppComponent } from './app.component';
+import { RetrospectiveComponent } from './retrospective/retrospective.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    RetrospectiveComponent
   ],
   imports: [
     BrowserModule,

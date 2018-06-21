@@ -1,4 +1,4 @@
-<mat-grid-list cols="3" rowHeight="800">
+<mat-grid-list cols="4" rowHeight="800">
   <mat-grid-tile>
     <mat-grid-tile-header>
         <mat-toolbar style="background: transparent">
@@ -7,7 +7,7 @@
           <button><mat-icon>add</mat-icon></button>
         </mat-toolbar>
     </mat-grid-tile-header>
-    <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="start">
+    <div fxLayout="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="start">
       <mat-card *ngFor="let item of retrospective.Likes">{{ item.Description }}</mat-card>
     </div>
   </mat-grid-tile>
@@ -19,7 +19,7 @@
             <button><mat-icon>add</mat-icon></button>
           </mat-toolbar>
       </mat-grid-tile-header>
-    <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="start">
+    <div fxLayout="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="start">
       <mat-card *ngFor="let item of retrospective.Dislikes">{{ item.Description }}</mat-card>
     </div>
   </mat-grid-tile>
@@ -31,8 +31,20 @@
             <button><mat-icon>add</mat-icon></button>
           </mat-toolbar>
       </mat-grid-tile-header>
-    <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="start">
+    <div fxLayout="Column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="start">
       <mat-card *ngFor="let item of retrospective.ActionItems">{{ item.Description }}</mat-card>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile>
+      <mat-grid-tile-header>
+          <mat-toolbar style="background: transparent">
+            <span style="font-size: 2em;">Participants {{ retrospective.Participants.length }}</span>
+            <span class="expand-fill"></span>
+            <button><mat-icon>add</mat-icon></button>
+          </mat-toolbar>
+      </mat-grid-tile-header>
+    <div fxLayout="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="start">
+      <mat-card *ngFor="let item of retrospective.Participants">{{ item.EmailAddress }}</mat-card>
     </div>
   </mat-grid-tile>
 </mat-grid-list>

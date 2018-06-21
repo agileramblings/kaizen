@@ -5,48 +5,10 @@
   </h1>
   <h3>{{ subtitle }}</h3>
 
-  <mat-form-field class="search-form">
+  <mat-form-field class="participant-form">
     <input matInput placeholder="Participant Id (email address)" type="text">
   </mat-form-field>
   <br>
-
-  <mat-grid-list cols="3" rowHeight="2:1">
-    <mat-grid-tile>
-      <mat-grid-tile-header>
-          <mat-toolbar style="background: transparent">
-            <span style="font-size: 2em;">Likes {{ retrospective.LikesCount }}</span>
-            <span class="expand-fill"></span>
-            <button><mat-icon>add</mat-icon></button>
-          </mat-toolbar>
-      </mat-grid-tile-header>
-      <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="left">
-        <mat-card *ngFor="let item of retrospective.Likes">{{ item.Description }}</mat-card>
-      </div>
-    </mat-grid-tile>
-    <mat-grid-tile>
-        <mat-grid-tile-header>
-            <mat-toolbar style="background: transparent">
-              <span style="font-size: 2em;">Dislikes {{ retrospective.DisikesCount }}</span>
-              <span class="expand-fill"></span>
-              <button><mat-icon>add</mat-icon></button>
-            </mat-toolbar>
-        </mat-grid-tile-header>
-      <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="left">
-        <mat-card *ngFor="let item of retrospective.Dislikes">{{ item.Description }}</mat-card>
-      </div>
-    </mat-grid-tile>
-    <mat-grid-tile>
-        <mat-grid-tile-header>
-            <mat-toolbar style="background: transparent">
-              <span style="font-size: 2em;">Action Items {{ retrospective.ActionItemsCount }}</span>
-              <span class="expand-fill"></span>
-              <button><mat-icon>add</mat-icon></button>
-            </mat-toolbar>
-        </mat-grid-tile-header>
-      <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="left">
-        <mat-card *ngFor="let item of retrospective.ActionItems">{{ item.Description }}</mat-card>
-      </div>
-    </mat-grid-tile>
-  </mat-grid-list>
+  <app-retrospective></app-retrospective>
 </div>
 

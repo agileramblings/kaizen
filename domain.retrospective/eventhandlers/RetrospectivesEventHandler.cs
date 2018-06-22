@@ -10,12 +10,15 @@ namespace kaizen.domain.retrospective.eventhandlers
     public class RetrospectivesEventHandler : 
         IHandles<RetrospectiveCreated>,
         IHandles<ParticipantAdded>,
-        IHandles<DislikeAdded>,
-        IHandles<DislikeUpdated>,
-        IHandles<DislikeDeleted>,
         IHandles<LikeAdded>,
         IHandles<LikeUpdated>,
         IHandles<LikeDeleted>,
+        IHandles<DislikeAdded>,
+        IHandles<DislikeUpdated>,
+        IHandles<DislikeDeleted>,
+        IHandles<ActionItemAdded>,
+        IHandles<ActionItemUpdated>,
+        IHandles<ActionItemDeleted>,
         IHandles<RetrospectiveStateChanged>,
         IHandles<LikeVoteToggled>,
         IHandles<DislikeVoteToggled>,
@@ -58,38 +61,6 @@ namespace kaizen.domain.retrospective.eventhandlers
             await _save.Put(details);
         }
 
-        public async Task Handle(LikeUpdated message)
-        {
-            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
-            var like = details.Likes.FirstOrDefault(l => l.Id == message.LikeIdentifier);
-            if (like != null)
-            {
-                like.Description = message.Description;
-                await _save.Put(details);
-            }
-        }
-        public async Task Handle(DislikeUpdated message)
-        {
-            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
-            var like = details.Dislikes.FirstOrDefault(l => l.Id == message.DislikeIdentifier);
-            if (like != null)
-            {
-                like.Description = message.Description;
-                await _save.Put(details);
-            }
-        }
-        public async Task Handle(DislikeDeleted message)
-        {
-            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
-            details.Dislikes.Remove(details.Dislikes.FirstOrDefault(l => l.Id == message.DislikeIdentifier));
-            await _save.Put(details);
-        }
-        public async Task Handle(LikeDeleted message)
-        {
-            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
-            details.Likes.Remove(details.Likes.FirstOrDefault(l => l.Id == message.LikeIdentifier));
-            await _save.Put(details);
-        }
         public async Task Handle(DislikeAdded message)
         {
             var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
@@ -100,6 +71,84 @@ namespace kaizen.domain.retrospective.eventhandlers
             });
             await _save.Put(details);
         }
+
+        public async Task Handle(LikeUpdated message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            var like = details.Likes.FirstOrDefault(l => l.Id == message.LikeIdentifier);
+            if (like != null)
+            {
+                like.Description = message.Description;
+                await _save.Put(details);
+            }
+        }
+
+        public async Task Handle(DislikeUpdated message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            var dislike = details.Dislikes.FirstOrDefault(l => l.Id == message.DislikeIdentifier);
+            if (dislike != null)
+            {
+                dislike.Description = message.Description;
+                await _save.Put(details);
+            }
+        }
+
+        public async Task Handle(DislikeDeleted message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            var item = details.Dislikes.FirstOrDefault(l => l.Id == message.DislikeIdentifier);
+            if (item != null)
+            {
+                details.Dislikes.Remove(item);
+                await _save.Put(details);
+            }
+        }
+
+        public async Task Handle(ActionItemDeleted message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            var item = details.ActionItems.FirstOrDefault(l => l.Id == message.ActionItemIdentifier);
+            if (item != null)
+            {
+                details.ActionItems.Remove(item);
+                await _save.Put(details);
+            }
+        }
+
+        public async Task Handle(LikeDeleted message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            var item = details.Likes.FirstOrDefault(l => l.Id == message.LikeIdentifier);
+            if (item != null)
+            {
+                details.Likes.Remove(item);
+                await _save.Put(details);
+            }
+        }
+
+        public async Task Handle(ActionItemAdded message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            details.ActionItems.Add(new ActionItem
+            {
+                Id = message.ActionItemId,
+                Description = message.Description
+            });
+        }
+
+
+        public async Task Handle(ActionItemUpdated message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            var actionItem = details.ActionItems.FirstOrDefault(l => l.Id == message.ActionItemIdentifier);
+            if (actionItem != null)
+            {
+                actionItem.Description = message.Description;
+                await _save.Put(details);
+            }
+        }
+
         public async Task Handle(RetrospectiveStateChanged message)
         {
             var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);

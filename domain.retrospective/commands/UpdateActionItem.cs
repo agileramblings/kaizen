@@ -3,18 +3,18 @@ using kaizen.domain.@base;
 
 namespace kaizen.domain.retrospective.commands
 {
-    public class UpdateDislike : CommandBase
+    public class UpdateActionItem : CommandBase
     {
         public readonly string Description;
         public readonly string ParticipantId;
         public readonly Guid RetrospectiveId;
-        public readonly Guid DislikeId;
+        public readonly Guid ActionItemId;
 
-        public UpdateDislike(Guid retrospectiveId, Guid dislikeId, string description, string participantId)
+        public UpdateActionItem(Guid retrospectiveId, Guid actionItemId, string description, string participantId)
             : base(Guid.NewGuid(), -1)
         {
             RetrospectiveId = retrospectiveId;
-            DislikeId = dislikeId;
+            ActionItemId = actionItemId;
             Description = description;
             ParticipantId = participantId;
         }

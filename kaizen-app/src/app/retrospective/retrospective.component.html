@@ -6,11 +6,18 @@
             <span style="font-size: 2em;margin-right: 10px;">Likes</span>
             <span>({{ retrospective.likesCount }})</span>
             <span class="expand-fill"></span>
-            <button (click)="addLike()"><mat-icon>add</mat-icon></button>
+            <button mat-mini-fab color="primary" (click)="addLike()"><mat-icon>add</mat-icon></button>
           </mat-toolbar>
       </mat-grid-tile-header>
-      <div fxLayout="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="start">
-        <mat-card *ngFor="let item of retrospective.likes">{{ item.description }}</mat-card>
+      <div fxLayout="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="start start">
+        <mat-card *ngFor="let item of retrospective.likes">          
+          <mat-card-title>
+            <button mat-icon-button color="primary"><mat-icon style="font-size: 18px;">thumb_up</mat-icon></button>
+            <button mat-icon-button color="accent"><mat-icon style="font-size: 18px;">thumb_down</mat-icon></button>
+            <button mat-icon-button ><mat-icon style="font-size: 18px;">delete</mat-icon></button>
+          </mat-card-title>
+          <mat-card-content>{{ item.description }}</mat-card-content>
+        </mat-card>
       </div>
     </mat-grid-tile>
     <mat-grid-tile>
@@ -19,11 +26,18 @@
               <span style="font-size: 2em;margin-right: 10px;">Dislikes</span>
               <span>({{ retrospective.dislikesCount }})</span>
               <span class="expand-fill"></span>
-              <button (click)="addDislike()"><mat-icon>add</mat-icon></button>
+              <button mat-mini-fab color="primary" (click)="addDislike()"><mat-icon>add</mat-icon></button>
             </mat-toolbar>
         </mat-grid-tile-header>
       <div fxLayout="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="start">
-        <mat-card *ngFor="let item of retrospective.dislikes">{{ item.description }}</mat-card>
+        <mat-card *ngFor="let item of retrospective.dislikes">
+          <mat-card-title style="font-size: .5em">
+              <button mat-icon-button color="primary"><mat-icon style="font-size: 18px;">thumb_up</mat-icon></button>
+              <button mat-icon-button color="accent"><mat-icon style="font-size: 18px;">thumb_down</mat-icon></button>
+              <button mat-icon-button ><mat-icon style="font-size: 18px;">delete</mat-icon></button>
+            </mat-card-title>
+          <mat-card-content>{{ item.description }}</mat-card-content>
+        </mat-card>
       </div>
     </mat-grid-tile>
     <mat-grid-tile>
@@ -32,11 +46,17 @@
               <span style="font-size: 2em;margin-right: 10px;">Action Items</span>
               <span>({{ retrospective.actionItemsCount }})</span>
               <span class="expand-fill"></span>
-              <button (click)="addActionItem()"><mat-icon>add</mat-icon></button>
+              <button mat-mini-fab color="primary" (click)="addActionItem()"><mat-icon>add</mat-icon></button>
             </mat-toolbar>
         </mat-grid-tile-header>
-      <div fxLayout="Column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="start">
-        <mat-card *ngFor="let item of retrospective.actionItems">{{ item.description }}</mat-card>
+      <div fxLayout="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="start">
+        <mat-card *ngFor="let item of retrospective.actionItems">
+          <mat-card-title style="font-size: .5em">
+              <button mat-icon-button color="primary"><mat-icon>thumb_up</mat-icon></button>
+              <button mat-icon-button color="accent"><mat-icon>thumb_down</mat-icon></button>
+            </mat-card-title>
+          <mat-card-content>{{ item.description }}</mat-card-content>
+        </mat-card>
       </div>
     </mat-grid-tile>
     <mat-grid-tile>
@@ -45,7 +65,7 @@
               <span style="font-size: 2em;margin-right: 10px;">Participants</span>
               <span>({{ retrospective.participants.length }})</span>
               <span class="expand-fill"></span>
-              <button><mat-icon>add</mat-icon></button>
+              <button mat-mini-fab color="primary"><mat-icon>add</mat-icon></button>
             </mat-toolbar>
         </mat-grid-tile-header>
       <div fxLayout="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="start">

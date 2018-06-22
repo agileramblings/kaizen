@@ -11,6 +11,7 @@ namespace kaizen.domain.retrospective.commandhandlers
         ICommandHandler<AddLike>,
         ICommandHandler<UpdateLike>,
         ICommandHandler<AddDislike>,
+        ICommandHandler<UpdateDislike>,
         ICommandHandler<AddActionItem>,
         ICommandHandler<UpdateRetroState>,
         ICommandHandler<Vote>
@@ -32,7 +33,14 @@ namespace kaizen.domain.retrospective.commandhandlers
         public async Task Handle(AddDislike command)
         {
             var retrospective = await _store.GetById<Retrospective>(command.RetrospectiveId);
-            retrospective.AddLikeItem(command.Description, command.ParticipantId);
+            retrospective.AddDislikeItem(command.Description, command.ParticipantId);
+            await _store.Save(retrospective, retrospective.Version);
+        }
+
+        public async Task Handle(UpdateDislike command)
+        {
+            var retrospective = await _store.GetById<Retrospective>(command.RetrospectiveId);
+            retrospective.UpdateDislikeItem(command.DislikeId, command.Description, command.ParticipantId);
             await _store.Save(retrospective, retrospective.Version);
         }
 
@@ -42,6 +50,7 @@ namespace kaizen.domain.retrospective.commandhandlers
             retrospective.AddLikeItem(command.Description, command.ParticipantId);
             await _store.Save(retrospective, retrospective.Version);
         }
+
         public async Task Handle(UpdateLike command)
         {
             var retrospective = await _store.GetById<Retrospective>(command.RetrospectiveId);

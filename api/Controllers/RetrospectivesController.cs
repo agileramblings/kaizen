@@ -82,6 +82,8 @@ namespace api.Controllers
         public async Task<IActionResult> CreateDislike(Guid retrospectiveId, string participantId, [FromBody] string description)
         {
             var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
+            var cmd = new AddDislike(retrospectiveId, description, participantId);
+            await _cmdSender.Send(cmd);
             return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
         }
 

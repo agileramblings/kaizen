@@ -10,6 +10,9 @@ namespace kaizen.domain.retrospective.eventhandlers
     public class RetrospectivesEventHandler : 
         IHandles<RetrospectiveCreated>,
         IHandles<ParticipantAdded>,
+        IHandles<DislikeAdded>,
+        IHandles<DislikeUpdated>,
+        IHandles<DislikeDeleted>,
         IHandles<LikeAdded>,
         IHandles<LikeUpdated>,
         IHandles<LikeDeleted>,
@@ -65,14 +68,38 @@ namespace kaizen.domain.retrospective.eventhandlers
                 await _save.Put(details);
             }
         }
-
+        public async Task Handle(DislikeUpdated message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            var like = details.Dislikes.FirstOrDefault(l => l.Id == message.DislikeIdentifier);
+            if (like != null)
+            {
+                like.Description = message.Description;
+                await _save.Put(details);
+            }
+        }
+        public async Task Handle(DislikeDeleted message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            details.Dislikes.Remove(details.Dislikes.FirstOrDefault(l => l.Id == message.DislikeIdentifier));
+            await _save.Put(details);
+        }
         public async Task Handle(LikeDeleted message)
         {
             var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
             details.Likes.Remove(details.Likes.FirstOrDefault(l => l.Id == message.LikeIdentifier));
             await _save.Put(details);
         }
-
+        public async Task Handle(DislikeAdded message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            details.Dislikes.Add(new Dislike
+            {
+                Id = message.DislikeId,
+                Description = message.Description
+            });
+            await _save.Put(details);
+        }
         public async Task Handle(RetrospectiveStateChanged message)
         {
             var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);

@@ -1,3 +1,9 @@
+export interface RetrospectiveItem {
+  id: string;
+  description: string;
+  votes: number;
+}
+
 export class Like {
   id: string;
   description: string;
@@ -14,4 +20,5 @@ export class ActionItem {
   id: string;
   description: string;
   votes: number;
+  done: boolean;
 }

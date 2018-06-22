@@ -6,6 +6,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { RetrospectiveDetails } from '../../_models/retrospective';
 import { RetrospectiveService } from '../../_services/retrospective.service';
+import { RetrospectiveCardComponent } from '../retrospective-card/retrospective-card.component';
 
 import { Observable, of } from 'rxjs';
 

@@ -8,7 +8,7 @@ import { RETROSPECTIVE } from './mock-retrospective';
 })
 export class AppComponent {
   title = 'Kaizen';
-  subtitle = 'Your Retrospective';
+  subtitle = 'Your Retrospective.';
   participant = 'dave.white@gettyimages.com';
   retrospective = RETROSPECTIVE;
 }

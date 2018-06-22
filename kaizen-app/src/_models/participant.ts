@@ -1,4 +1,4 @@
 export class Participant {
-  Name: string;
-  EmailAddress: string;
+  name: string;
+  emailAddress: string;
 }

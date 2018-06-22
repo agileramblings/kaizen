@@ -8,11 +8,13 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { AppComponent } from './app.component';
 import { RetrospectiveComponent } from './retrospective/retrospective.component';
+import { RetrospectiveCardComponent } from './retrospective-card/retrospective-card.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    RetrospectiveComponent
+    RetrospectiveComponent,
+    RetrospectiveCardComponent
   ],
   imports: [
     HttpClientModule,

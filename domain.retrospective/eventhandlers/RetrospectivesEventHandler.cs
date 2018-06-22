@@ -10,6 +10,7 @@ namespace kaizen.domain.retrospective.eventhandlers
     public class RetrospectivesEventHandler : 
         IHandles<RetrospectiveCreated>,
         IHandles<ParticipantAdded>,
+        IHandles<DislikeDeleted>,
         IHandles<LikeAdded>,
         IHandles<LikeUpdated>,
         IHandles<LikeDeleted>,
@@ -92,6 +93,13 @@ namespace kaizen.domain.retrospective.eventhandlers
             }
         }
 
+        public async Task Handle(DislikeDeleted message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            details.Dislikes.Remove(details.Dislikes.FirstOrDefault(l => l.Id == message.DislikeIdentifier));
+            await _save.Put(details);
+        }
+
         public async Task Handle(LikeDeleted message)
         {
             var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
@@ -107,8 +115,8 @@ namespace kaizen.domain.retrospective.eventhandlers
                 Id = message.ActionItemId,
                 Description = message.Description
             });
-            await _save.Put(details);
         }
+
 
         public async Task Handle(ActionItemUpdated message)
         {

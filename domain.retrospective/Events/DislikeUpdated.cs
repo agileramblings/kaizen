@@ -9,10 +9,11 @@ namespace kaizen.domain.retrospective.events
         public string Description;
         public Guid DislikeIdentifier;
 
-        public DislikeUpdated(Guid dislikeIdentifier, string description)
+        public DislikeUpdated(Guid retrospectiveId, Guid dislikeIdentifier, string description)
         {
-            Description = description;
+            RetrospectiveId = retrospectiveId;
             DislikeIdentifier = dislikeIdentifier;
+            Description = description;
         }
     }
 }

@@ -34,6 +34,7 @@ namespace kaizen.api
             {
                 c.SwaggerDoc("v1", new Info { Title = "Kaizen API", Version = "v1" });
             });
+            services.AddCors();
 
             // Autofac
             var builder = new ContainerBuilder();
@@ -81,6 +82,7 @@ namespace kaizen.api
                 app.UseHsts();
             }
 
+            app.UseCors(builder => builder.AllowAnyOrigin());
             app.UseHttpsRedirection();
             app.UseSwagger();
             app.UseSwaggerUI(c =>

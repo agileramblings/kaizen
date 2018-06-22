@@ -26,7 +26,11 @@ export class RetrospectiveComponent implements OnInit {
   }
 
   getRetros(): void {
-    this.retrospectives = this.retroService.getRetrospectives();
-    this.retrospective = this.retrospectives[0];
+    const response = this.retroService.getRetrospectives();
+    response.subscribe(retrospectives => {
+        console.log(retrospectives);
+        this.retrospectives = retrospectives;
+        this.retrospective = retrospectives[0];
+      });
   }
 }

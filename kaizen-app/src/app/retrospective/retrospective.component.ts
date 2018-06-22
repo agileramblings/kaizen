@@ -18,6 +18,8 @@ export class RetrospectiveComponent implements OnInit {
 
   retrospectives: RetrospectiveDetails[];
   retrospective: RetrospectiveDetails;
+  participantId: (string) = 'DavidChen';
+
 
   constructor(private retroService: RetrospectiveService) { }
 
@@ -32,5 +34,24 @@ export class RetrospectiveComponent implements OnInit {
         this.retrospectives = retrospectives;
         this.retrospective = retrospectives[0];
       });
+  }
+
+  addLike(): void {
+    const response = this.retroService.addLike(this.retrospective.id, this.participantId);
+    response.subscribe(retrospective => {
+      this.retrospective = retrospective;
+    });
+  }
+  addDislike(): void {
+    const response = this.retroService.addDislike(this.retrospective.id, this.participantId);
+    response.subscribe(retrospective => {
+      this.retrospective = retrospective;
+    });
+  }
+  addActionItem(): void {
+    const response = this.retroService.addActionItem(this.retrospective.id, this.participantId);
+    response.subscribe(retrospective => {
+      this.retrospective = retrospective;
+    });
   }
 }

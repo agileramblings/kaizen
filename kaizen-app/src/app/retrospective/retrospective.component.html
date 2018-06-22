@@ -6,7 +6,7 @@
             <span style="font-size: 2em;margin-right: 10px;">Likes</span>
             <span>({{ retrospective.likesCount }})</span>
             <span class="expand-fill"></span>
-            <button><mat-icon>add</mat-icon></button>
+            <button (click)="addLike()"><mat-icon>add</mat-icon></button>
           </mat-toolbar>
       </mat-grid-tile-header>
       <div fxLayout="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="start">
@@ -19,7 +19,7 @@
               <span style="font-size: 2em;margin-right: 10px;">Dislikes</span>
               <span>({{ retrospective.dislikesCount }})</span>
               <span class="expand-fill"></span>
-              <button><mat-icon>add</mat-icon></button>
+              <button (click)="addDislike()"><mat-icon>add</mat-icon></button>
             </mat-toolbar>
         </mat-grid-tile-header>
       <div fxLayout="column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="start">
@@ -32,7 +32,7 @@
               <span style="font-size: 2em;margin-right: 10px;">Action Items</span>
               <span>({{ retrospective.actionItemsCount }})</span>
               <span class="expand-fill"></span>
-              <button><mat-icon>add</mat-icon></button>
+              <button (click)="addActionItem()"><mat-icon>add</mat-icon></button>
             </mat-toolbar>
         </mat-grid-tile-header>
       <div fxLayout="Column" fxLayoutWrap fxLayoutGap="2.5%" fxLayoutAlign="start">

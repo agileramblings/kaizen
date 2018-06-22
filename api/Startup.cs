@@ -82,7 +82,12 @@ namespace kaizen.api
                 app.UseHsts();
             }
 
-            app.UseCors(builder => builder.AllowAnyOrigin());
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+            });
             app.UseHttpsRedirection();
             app.UseSwagger();
             app.UseSwaggerUI(c =>

@@ -65,7 +65,7 @@ namespace kaizen.domain.retrospective
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
             CheckExistsAndCanModify(Likes, likeIdentifier, participantId);
 
-            ApplyChange(new LikeDeleted(likeIdentifier));
+            ApplyChange(new LikeDeleted(Id, likeIdentifier));
         }
 
         public void AddDislikeItem(string description, string participantId)
@@ -89,7 +89,7 @@ namespace kaizen.domain.retrospective
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
             CheckExistsAndCanModify(Dislikes, dislikeIdentifier, participantId);
 
-            ApplyChange(new DislikeDeleted(dislikeIdentifier));
+            ApplyChange(new DislikeDeleted(Id, dislikeIdentifier));
         }
 
         public void UpdateRetroState(string participantId, RetrospectiveState state)

@@ -47,8 +47,9 @@ namespace kaizen.domain.retrospective
             CheckParticipant(participantId);
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
             
-            ApplyChange(new LikeAdded(this.Id, Guid.NewGuid(), description, participantId));
+            ApplyChange(new LikeAdded(Id, Guid.NewGuid(), description, participantId));
         }
+
         public void UpdateLikeItem(Guid likeIdentifier, string description, string participantId)
         {
             CheckParticipant(participantId);
@@ -57,6 +58,7 @@ namespace kaizen.domain.retrospective
 
             ApplyChange(new LikeUpdated(Id, likeIdentifier, description));
         }
+
         public void DeleteLikeItem(Guid likeIdentifier, string participantId)
         {
             CheckParticipant(participantId);
@@ -71,7 +73,7 @@ namespace kaizen.domain.retrospective
             CheckParticipant(participantId);
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectingSuggestions);
 
-            ApplyChange(new DislikeAdded(this.Id, Guid.NewGuid(), description, participantId));
+            ApplyChange(new DislikeAdded(Id, Guid.NewGuid(), description, participantId));
         }
         public void UpdateDislikeItem(Guid dislikeIdentifier, string description, string participantId)
         {
@@ -107,7 +109,7 @@ namespace kaizen.domain.retrospective
             CheckParticipant(participantId);
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectionActionItems);
 
-            ApplyChange(new ActionItemAdded(this.Id, Guid.NewGuid(), description, participantId));
+            ApplyChange(new LikeAdded(Id, Guid.NewGuid(), description, participantId));
         }
         public void UpdateActionItem(Guid actionItemIdentifier, string description, string participantId)
         {
@@ -115,7 +117,7 @@ namespace kaizen.domain.retrospective
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectionActionItems);
             CheckExistsAndCanModify(ActionItems, actionItemIdentifier, participantId);
 
-            ApplyChange(new ActionItemUpdated(this.Id, actionItemIdentifier, description));
+            ApplyChange(new ActionItemUpdated(Id, actionItemIdentifier, description));
         }
         public void DeleteActionItem(Guid actionItemIdentifier, string participantId)
         {

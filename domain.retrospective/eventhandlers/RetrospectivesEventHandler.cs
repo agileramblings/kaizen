@@ -13,6 +13,10 @@ namespace kaizen.domain.retrospective.eventhandlers
         IHandles<LikeAdded>,
         IHandles<LikeUpdated>,
         IHandles<LikeDeleted>,
+        IHandles<DislikeAdded>,
+        IHandles<DislikeUpdated>,
+        IHandles<ActionItemAdded>,
+        IHandles<ActionItemUpdated>,
         IHandles<RetrospectiveStateChanged>,
         IHandles<LikeVoteToggled>,
         IHandles<DislikeVoteToggled>,
@@ -55,6 +59,17 @@ namespace kaizen.domain.retrospective.eventhandlers
             await _save.Put(details);
         }
 
+        public async Task Handle(DislikeAdded message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            details.Dislikes.Add(new Dislike
+            {
+                Id = message.DislikeId,
+                Description = message.Description
+            });
+            await _save.Put(details);
+        }
+
         public async Task Handle(LikeUpdated message)
         {
             var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
@@ -66,11 +81,44 @@ namespace kaizen.domain.retrospective.eventhandlers
             }
         }
 
+        public async Task Handle(DislikeUpdated message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            var dislike = details.Dislikes.FirstOrDefault(l => l.Id == message.DislikeIdentifier);
+            if (dislike != null)
+            {
+                dislike.Description = message.Description;
+                await _save.Put(details);
+            }
+        }
+
         public async Task Handle(LikeDeleted message)
         {
             var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
             details.Likes.Remove(details.Likes.FirstOrDefault(l => l.Id == message.LikeIdentifier));
             await _save.Put(details);
+        }
+
+        public async Task Handle(ActionItemAdded message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            details.ActionItems.Add(new ActionItem
+            {
+                Id = message.ActionItemId,
+                Description = message.Description
+            });
+            await _save.Put(details);
+        }
+
+        public async Task Handle(ActionItemUpdated message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            var actionItem = details.ActionItems.FirstOrDefault(l => l.Id == message.ActionItemIdentifier);
+            if (actionItem != null)
+            {
+                actionItem.Description = message.Description;
+                await _save.Put(details);
+            }
         }
 
         public async Task Handle(RetrospectiveStateChanged message)

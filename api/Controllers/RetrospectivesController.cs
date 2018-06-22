@@ -78,10 +78,21 @@ namespace api.Controllers
             return response;
         }
 
+        [HttpDelete("{retrospectiveId}/like/{likeId}/{participantId}")]
+        public async Task<IActionResult> DeleteLike(Guid retrospectiveId, Guid likeId, string participantId)
+        {
+            var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
+            var cmd = new DeleteLike(retrospectiveId, likeId, participantId);
+            await _cmdSender.Send(cmd);
+            return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
+        }
+
         [HttpPost("{retrospectiveId}/dislike/{participantId}")]
         public async Task<IActionResult> CreateDislike(Guid retrospectiveId, string participantId, [FromBody] string description)
         {
             var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
+            var cmd = new AddDislike(retrospectiveId, description, participantId);
+            await _cmdSender.Send(cmd);
             return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
         }
 
@@ -89,12 +100,18 @@ namespace api.Controllers
         public async Task<IActionResult> UpdateDislike(Guid retrospectiveId, Guid dislikeId, string participantId, [FromBody] string description)
         {
             var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
-            return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
+            var cmd = new UpdateDislike(retrospectiveId, dislikeId, description, participantId);
+            await _cmdSender.Send(cmd);
+            var response = RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
+            return response;
         }
+
         [HttpPost("{retrospectiveId}/actionitem/{participantId}")]
         public async Task<IActionResult> CreateActionItem(Guid retrospectiveId, string participantId, [FromBody] string description)
         {
             var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
+            var cmd = new AddActionItem(retrospectiveId, description, participantId);
+            await _cmdSender.Send(cmd);
             return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
         }
 
@@ -102,7 +119,10 @@ namespace api.Controllers
         public async Task<IActionResult> UpdateActionItem(Guid retrospectiveId, Guid actionItemId, string participantId, [FromBody] string description)
         {
             var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
-            return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
+            var cmd = new UpdateActionItem(retrospectiveId, actionItemId, description, participantId);
+            await _cmdSender.Send(cmd);
+            var response = RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
+            return response;
         }
 
         [HttpPost("{retrospectiveId}/state")]

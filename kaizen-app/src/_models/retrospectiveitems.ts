@@ -1,17 +1,17 @@
 export class Like {
-  Id: string;
-  Description: string;
-  Votes: number;
+  id: string;
+  description: string;
+  votes: number;
 }
 
 export class Dislike {
-  Id: string;
-  Description: string;
-  Votes: number;
+  id: string;
+  description: string;
+  votes: number;
 }
 
 export class ActionItem {
-  Id: string;
-  Description: string;
-  Votes: number;
+  id: string;
+  description: string;
+  votes: number;
 }

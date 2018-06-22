@@ -10,14 +10,15 @@ namespace kaizen.domain.retrospective.eventhandlers
     public class RetrospectivesEventHandler : 
         IHandles<RetrospectiveCreated>,
         IHandles<ParticipantAdded>,
-        IHandles<DislikeDeleted>,
         IHandles<LikeAdded>,
         IHandles<LikeUpdated>,
         IHandles<LikeDeleted>,
         IHandles<DislikeAdded>,
         IHandles<DislikeUpdated>,
+        IHandles<DislikeDeleted>,
         IHandles<ActionItemAdded>,
         IHandles<ActionItemUpdated>,
+        IHandles<ActionItemDeleted>,
         IHandles<RetrospectiveStateChanged>,
         IHandles<LikeVoteToggled>,
         IHandles<DislikeVoteToggled>,
@@ -96,15 +97,34 @@ namespace kaizen.domain.retrospective.eventhandlers
         public async Task Handle(DislikeDeleted message)
         {
             var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
-            details.Dislikes.Remove(details.Dislikes.FirstOrDefault(l => l.Id == message.DislikeIdentifier));
-            await _save.Put(details);
+            var item = details.Dislikes.FirstOrDefault(l => l.Id == message.DislikeIdentifier);
+            if (item != null)
+            {
+                details.Dislikes.Remove(item);
+                await _save.Put(details);
+            }
+        }
+
+        public async Task Handle(ActionItemDeleted message)
+        {
+            var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
+            var item = details.ActionItems.FirstOrDefault(l => l.Id == message.ActionItemIdentifier);
+            if (item != null)
+            {
+                details.ActionItems.Remove(item);
+                await _save.Put(details);
+            }
         }
 
         public async Task Handle(LikeDeleted message)
         {
             var details = await _read.Get<RetrospectiveDetails>(message.RetrospectiveId);
-            details.Likes.Remove(details.Likes.FirstOrDefault(l => l.Id == message.LikeIdentifier));
-            await _save.Put(details);
+            var item = details.Likes.FirstOrDefault(l => l.Id == message.LikeIdentifier);
+            if (item != null)
+            {
+                details.Likes.Remove(item);
+                await _save.Put(details);
+            }
         }
 
         public async Task Handle(ActionItemAdded message)

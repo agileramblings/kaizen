@@ -78,6 +78,24 @@ namespace api.Controllers
             return response;
         }
 
+        [HttpDelete("{retrospectiveId}/actionitem/{actionItemId}/{participantId}")]
+        public async Task<IActionResult> DeleteActionItem(Guid retrospectiveId, Guid actionItemId, string participantId)
+        {
+            var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
+            var cmd = new DeleteActionItem(retrospectiveId, actionItemId, participantId);
+            await _cmdSender.Send(cmd);
+            return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
+        }
+
+        [HttpDelete("{retrospectiveId}/dislike/{dislikeId}/{participantId}")]
+        public async Task<IActionResult> DeleteDislike(Guid retrospectiveId, Guid dislikeId, string participantId)
+        {
+            var retro = await _aggRepo.GetById<Retrospective>(retrospectiveId);
+            var cmd = new DeleteDislike(retrospectiveId, dislikeId, participantId);
+            await _cmdSender.Send(cmd);
+            return RedirectToAction("Get", new { retrospectiveId = retrospectiveId });
+        }
+
         [HttpDelete("{retrospectiveId}/like/{likeId}/{participantId}")]
         public async Task<IActionResult> DeleteLike(Guid retrospectiveId, Guid likeId, string participantId)
         {

@@ -125,7 +125,7 @@ namespace kaizen.domain.retrospective
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectionActionItems);
             CheckExistsAndCanModify(ActionItems, actionItemIdentifier, participantId);
 
-            ApplyChange(new ActionItemDeleted(this.Id, actionItemIdentifier));
+            ApplyChange(new ActionItemDeleted(Id, actionItemIdentifier));
         }
         public void ToggleLikeVote(Guid likeIdentifier, string participantId)
         {

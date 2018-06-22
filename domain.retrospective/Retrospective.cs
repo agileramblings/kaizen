@@ -109,7 +109,7 @@ namespace kaizen.domain.retrospective
             CheckParticipant(participantId);
             CheckRetrospectiveInDesiredState(RetrospectiveState.CollectionActionItems);
 
-            ApplyChange(new LikeAdded(Id, Guid.NewGuid(), description, participantId));
+            ApplyChange(new ActionItemAdded(Id, Guid.NewGuid(), description, participantId));
         }
         public void UpdateActionItem(Guid actionItemIdentifier, string description, string participantId)
         {

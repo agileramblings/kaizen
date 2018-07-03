@@ -7,12 +7,14 @@ using kaizen.domain.@base.persistence;
 using kaizen.domain.retrospective;
 using kaizen.domain.retrospective.commands;
 using kaizen.domain.retrospective.readmodel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Route("api/v1/retrospectives")]
     [ApiController]
+    [Authorize(Policy = "ApiUser")]
+    [Route("api/v1/retrospectives")]
     public class RetrospectivesController : ControllerBase
     {
         private readonly ICommandSender _cmdSender;

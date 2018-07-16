@@ -19,7 +19,7 @@ namespace kaizen.api.Areas.Identity
             {
                 services.AddDbContext<kaizenapiContext>(options =>
                     options.UseSqlServer(
-                        context.Configuration.GetConnectionString("kaizenapiContextConnection")));
+                        context.Configuration.GetConnectionString("kaizenapiContextConnection1")));
 
                 services.AddDefaultIdentity<kaizenapiUser>()
                     .AddEntityFrameworkStores<kaizenapiContext>();
